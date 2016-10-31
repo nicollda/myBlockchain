@@ -144,7 +144,7 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 
 	} else if function == "cash" {
 		// query a users cash on hand
-	//	return t.cash(stub, args)
+		return t.cash(stub, args)
 	
 	} else if function == "market" {
 		// query a users total market value based on cash + market value of holdings
@@ -199,6 +199,13 @@ const initialCash =		1000
 const payout =			5
 const defaultPrice =	5
 const separator = 		": "
+
+func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+	fmt.Printf("Running cash")
+	
+	
+	return []byte(100), nil;
+}
 
 // register user
 func (t *SimpleChaincode) registerUser(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
