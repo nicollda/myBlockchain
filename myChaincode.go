@@ -209,10 +209,22 @@ const separator = 		": "
 func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	fmt.Printf("Running cash")
 	
+	var u User
+	
+	bank, err := stub.GetState(userIndex + ": BANK")
+	
+	if err != nil {
+		return nil, err
+	}
 	
 	
-	cashHoldings, _ := stub.GetState(userIndex + ": BANK")
-	return cashHoldings, nil
+	err = json.Unmarshal(bank, &u)
+	
+	if err != nil {
+		return nil, err
+	}
+	
+	return []byte(strconv.Itoa(u.Cash)), nil
 	
 }
 
