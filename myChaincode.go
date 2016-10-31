@@ -48,7 +48,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	user.Status = "Active"
 	user.Cash	= 1000000
 	
-	temp, err := json.Marshal(&user)
+	temp, err := json.Marshal(user)
 	err = stub.PutState(userIndex + ": BANK", temp)  //maybe make user10  the bank?  
 	if err != nil {
 		return nil, err
