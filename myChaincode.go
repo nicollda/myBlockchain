@@ -49,9 +49,14 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	user.Cash	= 1000
 	
 	temp, err := json.Marshal(user)
+	
+	if err != nil {
+		return "Failed", err
+	}
+	
 	err = stub.PutState(userIndex + ": BANK", temp)  //maybe make user10  the bank?  
 	if err != nil {
-		return nil, err
+		return "Failed", nil //, err
 	}
 	
 	// initially offer some happenings
