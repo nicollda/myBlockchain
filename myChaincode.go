@@ -204,7 +204,10 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	fmt.Printf("Running cash")
 	
 	
-	return []byte("100"), nil
+	
+	cashHoldings, _ := stub.GetState(userIndex + ": BANK")
+	return cashHoldings, nil
+	
 }
 
 // register user
