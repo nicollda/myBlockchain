@@ -46,7 +46,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	var user User
 	user.UserID = "BANK"
 	user.Status = "Active"
-	user.Cash	= 1000000
+	user.Cash	= 1000
 	
 	temp, err := json.Marshal(user)
 	err = stub.PutState(userIndex + ": BANK", temp)  //maybe make user10  the bank?  
@@ -64,7 +64,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	a[3] = "100"		//number of shares
 	a[4] = ""
 	a[5] = "BANK"
-	
+	/*	
 	_, err = t.registerTrade(stub, "IPO", a)
 	if err != nil {
 		return nil, err
@@ -87,8 +87,9 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	if err != nil {
 		return nil, err
 	}
+*/
 
-	return nil, nil
+	return []byte("Worked"), nil
 }
 
 
