@@ -46,6 +46,7 @@ const happeningIndex = 	"HappeningIndex" + separator
 const initialCash =		1000
 const payout =			5
 const defaultPrice =	5
+const bankUser = 		userIndex + "BANK"
 
 
 
@@ -102,7 +103,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 
 	
 	//err := stub.PutState("BANK", []byte("TEST")) //userIndex + user.UserID, u)  //maybe make user1  the bank?  
-	err = stub.PutState("BANK", u)
+	err = stub.PutState(bankUser, u)
 	if err != nil {
 		return nil, err
 	}
@@ -236,7 +237,7 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	
 	//var bankString string
 	
-	bank, err := stub.GetState("BANK")  //userIndex + "BANK")
+	bank, err := stub.GetState(bankUser)  //userIndex + "BANK")
 	if err != nil {
 		return nil, err
 	}
