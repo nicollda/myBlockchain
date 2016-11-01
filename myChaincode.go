@@ -233,14 +233,14 @@ func main() {
 func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	fmt.Printf("Running cash")
 	
-	var bankString string
+	//var bankString string
 	
 	bank, err := stub.GetState("BANK")  //userIndex + "BANK")
 	if err != nil {
 		return nil, err
 	}
 
-	json.Unmarshal(bank, &bankString)
+	//json.Unmarshal(bank, &bankString)
 /*
 	var user User
 
@@ -251,7 +251,7 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	
 */
 	
-	return []byte(bankString), nil//[]byte(strconv.Itoa(user.Cash)), nil
+	return bank, nil//[]byte(strconv.Itoa(user.Cash)), nil
 	
 }
 
