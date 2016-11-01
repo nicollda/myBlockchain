@@ -25,7 +25,7 @@ under the License.
 //todo: add security to get user names
 
 
-//  my change
+
 
 package main
 
@@ -233,12 +233,14 @@ func main() {
 func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	fmt.Printf("Running cash")
 	
+	var bankString string
 	
 	bank, err := stub.GetState("BANK")  //userIndex + "BANK")
 	if err != nil {
 		return nil, err
 	}
 
+	json.Unmarshal(bank, &bankString)
 /*
 	var user User
 
@@ -249,7 +251,7 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	
 */
 	
-	return bank, nil//[]byte(strconv.Itoa(user.Cash)), nil
+	return []byte(bankString), nil//[]byte(strconv.Itoa(user.Cash)), nil
 	
 }
 
