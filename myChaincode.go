@@ -15,7 +15,7 @@ specific language governing permissions and limitations
 under the License.
 */
 
-//  my change
+
 
 //todo:  add constants for all string litterals
 //todo:  need to make consitent status.  need better way to take them out of the process when closed
@@ -23,6 +23,8 @@ under the License.
 //todo: put funtions etc.  in the right order
 //todo: add error trapping
 //todo: add security to get user names
+
+
 
 package main
 
@@ -34,6 +36,8 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
+
+
 const separator = 		"::::"
 const userIndex =		"UserIndex" + separator
 const tradeIndex =		"TradeIndex" + separator
@@ -41,6 +45,7 @@ const happeningIndex = 	"HappeningIndex" + separator
 const initialCash =		1000
 const payout =			5
 const defaultPrice =	5
+
 
 
 type Trade struct {
@@ -74,6 +79,10 @@ type User struct {
 type SimpleChaincode struct {
 }
 
+
+
+
+
 //Init the blockchain.  populate a 2x2 grid of potential events for users to buy
 func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Printf("Init called, initializing chaincode")
@@ -90,7 +99,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
-	err = stub.PutState(userIndex + user.UserID, u)  //maybe make user1  the bank?  
+	err = stub.PutState("BANK", u) //userIndex + user.UserID, u)  //maybe make user1  the bank?  
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +114,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	a[3] = "100"		//number of shares
 	a[4] = ""
 	a[5] = "BANK"
-	
+/*	
 	_, err = t.registerTrade(stub, "IPO", a)
 	if err != nil {
 		return nil, err
@@ -128,9 +137,13 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	if err != nil {
 		return nil, err
 	}
+*/
 
 	return []byte("Worked"), nil
 }
+
+
+
 
 
 // Invoke callback representing the invocation of a chaincode
@@ -199,12 +212,18 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 	return nil, nil
 }
 
+
+
+
+
 func main() {
 	err := shim.Start(new(SimpleChaincode))
 	if err != nil {
 		fmt.Printf("Error starting Simple chaincode: %s", err)
 	}
 }
+
+
 
 
 
@@ -216,7 +235,7 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	var user User
 	
 	
-	bank, err := stub.GetState(userIndex + "BANK")
+	bank, err := stub.GetState("BANK")  //userIndex + "BANK")
 	if err != nil {
 		return nil, err
 	}
@@ -231,6 +250,8 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	return []byte(strconv.Itoa(user.Cash)), nil
 	
 }
+
+
 
 
 // register user
@@ -259,6 +280,10 @@ func (t *SimpleChaincode) registerUser(stub *shim.ChaincodeStub, args []string) 
 	
 	return index, nil
 }
+	
+	
+	
+	
 	
 
 // initial public offering for a square
@@ -303,12 +328,18 @@ func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType stri
 }
 
 
+
+
+
 //   curently not used but should be used in place of taking the user id via the interface.  user id should come from the security model
 func (t *SimpleChaincode) getUserID(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	//returns the user's ID 
 	
 	return nil, nil  //dont know how to get the current user
 }
+
+
+
 
 
 // user offers a square for sale asking for x for y units
@@ -339,6 +370,9 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, lastIDString st
 }
 
 
+
+
+
 // need to make a persistance class / data abstraction
 func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, value []byte) ([]byte, error) {
 	fmt.Printf("Running Push")
@@ -361,6 +395,8 @@ func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, v
 	
 	return index, nil
 }	
+
+
 
 
 
@@ -432,6 +468,12 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 }
 
 
+
+
+
+
+
+
 // run on a schedule to execute any pending trades. matching asks with bids and updating the ledger
 // first iteration will:
 //		only match buyer and seller based on ticker and not on bid and ask prices.  this will simplify and elimiate items we are not trying to prove
@@ -491,6 +533,11 @@ func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub, args []string) ([]b
 	
 	return nil, nil
 }
+
+
+
+
+
 
 
 //actually make the trade.  does not vlidate anything.  this should be added at some point:
