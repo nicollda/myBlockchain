@@ -29,10 +29,44 @@ import (
 	"fmt"
 	"strconv"
 	"encoding/json"
-//	"encoding/binary"
-//	"bytes"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
+
+
+const userIndex =		"UserIndex"
+const tradeIndex =		"TradeIndex"
+const happeningIndex = 	"HappeningIndex"
+const initialCash =		1000
+const payout =			5
+const defaultPrice =	5
+const separator = 		": "
+
+type Trade struct {
+	Entity    string  `json:"entity"`
+	Char	  string  `json:"char"`
+	Event	  string  `json:"event"`
+	Action    string  `json:"action"`
+	Price	  float64 `json:"price"`
+	Units	  int	  `json:"units"`
+	Status	  string  `json:"status"`
+	Expiry    string  `json:"expiry"`
+	Fulfilled int     `json:"fulfilled"`
+}
+
+
+type HappeningRegister struct {
+	Char        string  `json:"char"`
+	Event       string  `json:"event"`
+	User        string  `json:"user"`
+}
+
+type User struct {
+	UserID 		string `json:"userID"`
+	Status		string `json:"status"`
+	Cash		int    `json:"cash"`
+}
+
+
 
 // SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
@@ -54,9 +88,9 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		//return nil, err
 	}
 	
-	err = stub.PutState(userIndex + ": BANK", u)  //maybe make user1  the bank?  
+	err = stub.PutState("BANK", u) //userIndex + ": BANK", u)  //maybe make user1  the bank?  
 	if err != nil {
-		return []byte("Worked"), nil
+		return []byte("not Worked 2"), nil
 		//return nil, err
 	}
 	
@@ -98,7 +132,6 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 
 	return []byte("Worked"), nil
 }
-
 
 
 // Invoke callback representing the invocation of a chaincode
@@ -176,62 +209,20 @@ func main() {
 
 
 
-type Trade struct {
-	Entity    string  `json:"entity"`
-	Char	  string  `json:"char"`
-	Event	  string  `json:"event"`
-	Action    string  `json:"action"`
-	Price	  float64 `json:"price"`
-	Units	  int	  `json:"units"`
-	Status	  string  `json:"status"`
-	Expiry    string  `json:"expiry"`
-	Fulfilled int     `json:"fulfilled"`
-}
-
-
-type HappeningRegister struct {
-	Char        string  `json:"char"`
-	Event       string  `json:"event"`
-	User        string  `json:"user"`
-}
-
-type User struct {
-	UserID 		string `json:"userID"`
-	Status		string `json:"status"`
-	Cash		int    `json:"cash"`
-}
-
-const userIndex =		"UserIndex"
-const tradeIndex =		"TradeIndex"
-const happeningIndex = 	"HappeningIndex"
-const initialCash =		1000
-const payout =			5
-const defaultPrice =	5
-const separator = 		": "
 
 func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	fmt.Printf("Running cash")
 	
 
 	var u User
-/*	
 	
-	bank, err := stub.GetState(userIndex + ": BANK")
+	
+	bank, err := stub.GetState("BANK") //userIndex + ": BANK")
 	if err != nil {
 		return nil, err
 	}
-*/
 
-	var user User
-	user.UserID = "BANK"
-	user.Status = "Active"
-	user.Cash	= 1000
-	
-	bank, err := json.Marshal(user)
-	if err != nil {
-		return nil, err
-	}
-	
+
 	err = json.Unmarshal(bank, &u)
 	if err != nil {
 		return nil, err
@@ -241,6 +232,7 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	return []byte(strconv.Itoa(u.Cash)), nil
 	
 }
+
 
 // register user
 func (t *SimpleChaincode) registerUser(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
