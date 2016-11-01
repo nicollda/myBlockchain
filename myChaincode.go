@@ -89,7 +89,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	fmt.Printf("Init called, initializing chaincode")
 	
 	//create a bank with some money
-/*	var user User
+	var user User
 	user.UserID = "BANK"
 	user.Status = "Active"
 	user.Cash	= 1000
@@ -99,9 +99,10 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		
 		return nil, err
 	}
-*/
+
 	
-	err := stub.PutState("BANK", []byte("TEST")) //userIndex + user.UserID, u)  //maybe make user1  the bank?  
+	//err := stub.PutState("BANK", []byte("TEST")) //userIndex + user.UserID, u)  //maybe make user1  the bank?  
+	err = stub.PutState("BANK", u)
 	if err != nil {
 		return nil, err
 	}
