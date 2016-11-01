@@ -15,7 +15,7 @@ specific language governing permissions and limitations
 under the License.
 */
 
-
+//  my change
 
 //todo:  add constants for all string litterals
 //todo:  need to make consitent status.  need better way to take them out of the process when closed
