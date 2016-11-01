@@ -7,7 +7,10 @@ ECHO Building.....
 go build c:\gogit\myChaincode.go
 
 
-IF NOT ERRORLEVEL 1 git commit -m "commit" 
+IF NOT ERRORLEVEL 1 (
+	git commit -m "commit" -a
+	git push
+)
 
 
 pause
