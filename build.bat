@@ -1,8 +1,14 @@
-cd c:\go
+@ECHO OFF
+cd c:\gogit
 
 :build
 cls
-go build c:\gotest\myChaincode.go
+ECHO Building.....
+go build c:\gogit\myChaincode.go
+
+
+IF NOT ERRORLEVEL 1 git commit -m "commit" 
+
 
 pause
 
