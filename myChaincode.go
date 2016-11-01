@@ -109,7 +109,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	}
 	
 	// initially offer some happenings
-/*
+
 	var a []string
 	
 	a[0] = "Jaime"	//character
@@ -141,7 +141,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	if err != nil {
 		return nil, err
 	}
-*/
+
 
 	return nil, nil
 }
