@@ -247,7 +247,7 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	}
 	
 	
-	return []byte(strconv.Itoa(user.Cash)), nil
+	return bank, nil//[]byte(strconv.Itoa(user.Cash)), nil
 	
 }
 
