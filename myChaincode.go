@@ -392,13 +392,14 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, lastIDString st
 // need to make a persistance class / data abstraction
 func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, value []byte) ([]byte, error) {
 	fmt.Printf("Running Push")
-	/*
-	index, err := t.getNextIndex(stub, "Last" + structureName)
-	if err != nil {
+	
+//	index, err :=
+	t.getNextIndex(stub, "Last" + structureName)
+/*	if err != nil {
 		return nil, err
 	}
 	
-	
+	/*
 	// Write the state back to the ledger
 	var key string
 	
