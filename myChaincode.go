@@ -236,7 +236,8 @@ func main() {
 func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	fmt.Printf("Running cash")
 	
-	//var bankString string
+
+	//index, err := t.getNextIndex(stub, tradeIndex)
 	
 	bank, err := stub.GetState(bankUser)//"LastTradeIndex")//bankUser)  //userIndex + "BANK")
 	if err != nil {
@@ -320,7 +321,7 @@ func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType stri
 func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, value []byte) ([]byte, error) {
 	fmt.Printf("Running Push")
 	
-	index, err := t.getNextIndex(stub, "Last" + structureName)
+	index, err := t.getNextIndex(stub, structureName)
 	if err != nil {
 		return nil, err
 	}
@@ -330,7 +331,7 @@ func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, v
 	
 	key = structureName + string(index)
 		
-	err = 	stub.PutState(key, value)
+	err = stub.PutState(key, value)
 	if err != nil {
 		return nil, err
 	}
@@ -342,12 +343,12 @@ func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, v
 
 
 // user offers a square for sale asking for x for y units
-func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, lastIDString string) ([]byte, error) {
+func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, structureName string) ([]byte, error) {
 	fmt.Printf("Running getNextIndex")
 	/*
 	var id int
 	
-	lastIDByteA, err := stub.GetState(lastIDString)
+	lastIDByteA, err := stub.GetState("Last" + StructureName)
 	if err != nil {
 		id = 1
 	} else { 
