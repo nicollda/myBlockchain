@@ -398,7 +398,8 @@ func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, v
 		return nil, err
 	}
 	
-
+	index=index
+/*
 	// Write the state back to the ledger
 	var key string
 	
