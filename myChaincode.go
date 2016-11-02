@@ -112,7 +112,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 
 	//var a []string
 	
-	a := []string {"Jaime", "asdfasdf"}	//character
+	a := []string {"Jaime", "asdfasdf", "hjfhj"}	//character
 	
 	a[2] = "hjfhjf"
 	
