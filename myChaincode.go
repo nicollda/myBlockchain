@@ -403,12 +403,13 @@ func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, v
 	var key string
 	
 	key = structureName + string(index)
-	
-	err = stub.PutState(key, []byte(value))
+	key = key
+/*	
+	err = 	stub.PutState(key, []byte(value))
 	if err != nil {
 		return nil, err
 	}
-	
+*/	
 	return nil, nil
 }	
 
