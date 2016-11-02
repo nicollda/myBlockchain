@@ -254,12 +254,6 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 */
 
 
-	_, err = t.getNextIndex(stub, tradeIndex)
-	if err != nil {
-		return nil, err
-	}
-
-	
 	return bank, nil//[]byte(strconv.Itoa(user.Cash)), nil
 	
 }
@@ -395,7 +389,7 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, structureName s
 	
 	fmt.Printf(strconv.Itoa(lastID))
 	
-	return []byte("1"), nil
+	return lastIDByteA, nil
 }
 
 
