@@ -296,7 +296,7 @@ func (t *SimpleChaincode) registerUser(stub *shim.ChaincodeStub, args []string) 
 // initial public offering for a square
 func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType string, args []string) ([]byte, error) {
 	fmt.Printf("Running registerTrade")
-	
+	/*
 	if len(args) != 6 {
 		return nil, errors.New("Incorrect number of arguments. Expecting registerTrade(character, event, price, units, expiry, user)")
 	}
@@ -331,7 +331,9 @@ func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType stri
 		return nil, err
 	}
 	
-	return index, nil
+	*/
+	
+	return nil, nil
 }
 
 
