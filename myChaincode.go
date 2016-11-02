@@ -123,7 +123,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
-	/*
+	
 
 	a[1] = "Killer"
 	_, err = t.registerTrade(stub, "IPO", a[0:5])
@@ -142,7 +142,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	if err != nil {
 		return nil, err
 	}
-*/
+
 
 	return nil, nil
 }
@@ -344,37 +344,12 @@ func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, v
 // user offers a square for sale asking for x for y units
 func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, structureName string) ([]byte, error) {
 	fmt.Printf("Running getNextIndex")
-	/*
-	var lastID int
-	
-	lastIDByteA, err := stub.GetState("Last" + structureName)
-	if err != nil {
-		lastID = 1
-	} else { 
-		lastID, err = strconv.Atoi(string(lastIDByteA))
-		if err != nil {
-			return nil, err
-		}
-		
-		lastID = lastID + 1
-	}
-	
-	/*
-	lastIDByteA = []byte(strconv.Itoa(lastID))   
-	err = stub.PutState("Last" + structureName, lastIDByteA)
-	if err != nil {
-		return nil, err
-	}
 
-/*
-	return newLastIDByteA, nil
-	
-	*/
 	var lastID int
 	
 	lastIDByteA, err := stub.GetState("Last" + structureName)
 	lastID, err = strconv.Atoi(string(lastIDByteA))
-	if err != nil { //lastIDByteA == nil {
+	if err != nil {
 		lastID = 1
 	} else { 
 		lastID = lastID + 1
