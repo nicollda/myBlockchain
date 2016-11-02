@@ -302,24 +302,30 @@ func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType stri
 	}
 	
 	var trade Trade
+	var err error
 	
 	if tradeType == "IPO" {
 		trade.Entity = "BANK"  // who is the source user
 	} else { 
 		trade.Entity = args[5]  //should get this from the security mechanism...  dont know how that works
 	}
-	
-	
-	/* 
+		
 	
 	trade.Char = args[0]
 	trade.Event = args[1]
 	trade.Action = tradeType
 	trade.Price, err = strconv.ParseFloat(args[2], 64)
+	if err != nil {
+		return nil, err
+	}
 	trade.Units, err = strconv.Atoi(args[3])
+	if err != nil {
+		return nil, err
+	}
 	trade.Status = "Open"
 	trade.Expiry = args[4]
 	trade.Fulfilled = 0
+	/*
 	
 	// Write the state back to the ledger
 	temp, err := json.Marshal(trade)
