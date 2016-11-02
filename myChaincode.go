@@ -374,7 +374,7 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, structureName s
 	var lastID int
 	
 	lastIDByteA, err := stub.GetState("Last" + structureName)
-	if err != nil {
+	if err != nil || 1==1 {
 		lastID = 1
 	} else { 
 		lastID, err = strconv.Atoi(string(lastIDByteA))
