@@ -261,36 +261,7 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 
 
 
-// register user
-func (t *SimpleChaincode) registerUser(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-	fmt.Printf("Running registerUser")
-//need to make sure the user is not already registered
-//need to make another hash to hold the users' id and return thier index
 
-	var userIndex	string
-	var user 		User
-		
-	user.UserID = args[0]
-	user.Status = "Active"
-	user.Cash	= initialCash
-	
-	temp, err := json.Marshal(user)
-	if err != nil {
-		return nil, err
-	}
-	
-	
-	index, err := t.push(stub, userIndex, temp)
-	if err != nil {
-		return nil, err
-	}
-	
-	return index, nil
-}
-	
-	
-	
-	
 	
 
 // initial public offering for a square
@@ -345,53 +316,6 @@ func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType stri
 
 
 
-
-//   curently not used but should be used in place of taking the user id via the interface.  user id should come from the security model
-func (t *SimpleChaincode) getUserID(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-	//returns the user's ID 
-	
-	return nil, nil  //dont know how to get the current user
-}
-
-
-
-
-
-// user offers a square for sale asking for x for y units
-func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, lastIDString string) ([]byte, error) {
-	fmt.Printf("Running getNextIndex")
-	/*
-	var id int
-	
-	lastID, err := stub.GetState(lastIDString)
-	if err != nil {
-		id = 1
-	} else { 
-		temp, err := strconv.Atoi(string(lastID))
-		if err != nil {
-			return nil, err
-		}
-		id = temp + 1
-	}
-	
-	
-	idString := []byte(strconv.Itoa(id))   //not really an id "string".  the byte array / string in this language is a pain
-	err = stub.PutState(lastIDString, idString)
-	if err != nil {
-		return nil, err
-	}
-	
-	return idString, nil
-	*/
-	
-	lastID, _ := stub.GetState(lastIDString)
-	return lastID, nil
-}
-
-
-
-
-
 // need to make a persistance class / data abstraction
 func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, value []byte) ([]byte, error) {
 	fmt.Printf("Running Push")
@@ -416,6 +340,42 @@ func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, v
 */	
 	return index, nil
 }	
+
+
+
+
+// user offers a square for sale asking for x for y units
+func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, lastIDString string) ([]byte, error) {
+	fmt.Printf("Running getNextIndex")
+	
+	var id int
+	
+	lastIDByteA, err := stub.GetState(lastIDString)
+	if err != nil {
+		id = 1
+	} else { 
+		lastIDString, err := strconv.Atoi(string(lastIDByteA))
+		if err != nil {
+			return nil, err
+		}
+		id = lastIDString + 1
+	}
+	
+	
+	newLastIDByteA := []byte(strconv.Itoa(id))   
+	err = stub.PutState(lastIDString, newLastIDByteA)
+	if err != nil {
+		return nil, err
+	}
+
+
+	return newLastIDByteA, nil
+}
+
+
+
+
+
 
 
 
@@ -669,3 +629,43 @@ func (t *SimpleChaincode) executeTrade(stub *shim.ChaincodeStub, buyTradeIndex i
 	
 	return nil, nil
 }	
+
+
+
+// register user
+func (t *SimpleChaincode) registerUser(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+	fmt.Printf("Running registerUser")
+//need to make sure the user is not already registered
+//need to make another hash to hold the users' id and return thier index
+
+	var userIndex	string
+	var user 		User
+		
+	user.UserID = args[0]
+	user.Status = "Active"
+	user.Cash	= initialCash
+	
+	temp, err := json.Marshal(user)
+	if err != nil {
+		return nil, err
+	}
+	
+	
+	index, err := t.push(stub, userIndex, temp)
+	if err != nil {
+		return nil, err
+	}
+	
+	return index, nil
+}
+
+
+//   curently not used but should be used in place of taking the user id via the interface.  user id should come from the security model
+func (t *SimpleChaincode) getUserID(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+	//returns the user's ID 
+	
+	return nil, nil  //dont know how to get the current user
+}
+
+
+
