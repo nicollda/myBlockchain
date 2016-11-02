@@ -393,7 +393,7 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, lastIDString st
 func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, value []byte) ([]byte, error) {
 	fmt.Printf("Running Push")
 	
-	_, err := t.getNextIndex(stub, "Last" + structureName)
+	index, err := t.getNextIndex(stub, "Last" + structureName)
 	if err != nil {
 		return nil, err
 	}
@@ -411,7 +411,7 @@ func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, v
 		return nil, err
 	}
 */	
-	return nil, nil
+	return index, nil
 }	
 
 
