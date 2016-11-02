@@ -123,22 +123,20 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
-	
-
 	a[1] = "Killer"
-	_, err = t.registerTrade(stub, "IPO", a[0:5])
+	_, err = t.registerTrade(stub, "IPO", a)
 	if err != nil {
 		return nil, err
 	}
 
 	a[0] = "Jon"
-	_, err = t.registerTrade(stub, "IPO", a[0:5])
+	_, err = t.registerTrade(stub, "IPO", a)
 	if err != nil {
 		return nil, err
 	}
 	
 	a[1] = "Killed"
-	_, err = t.registerTrade(stub, "IPO", a[0:5])
+	_, err = t.registerTrade(stub, "IPO", a)
 	if err != nil {
 		return nil, err
 	}
