@@ -334,13 +334,12 @@ func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType stri
 	}
 	
 	
-//	index,
-_,	err = t.push(stub, tradeIndex, temp)
+	index, err := t.push(stub, tradeIndex, temp)
 	if err != nil {
 		return nil, err
 	}
 	
-	return nil, nil
+	return index, nil
 }
 
 
@@ -361,7 +360,7 @@ func (t *SimpleChaincode) getUserID(stub *shim.ChaincodeStub, args []string) ([]
 // user offers a square for sale asking for x for y units
 func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, lastIDString string) ([]byte, error) {
 	fmt.Printf("Running getNextIndex")
-	
+	/*
 	var id int
 	
 	lastID, err := stub.GetState(lastIDString)
@@ -383,6 +382,10 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, lastIDString st
 	}
 	
 	return idString, nil
+	*/
+	
+	lastID, _ := stub.GetState(lastIDString)
+	return lastID, nil
 }
 
 
