@@ -118,11 +118,13 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	a[4] = ""
 	a[5] = "BANK"
 
-	/*
+	
 	_, err = t.registerTrade(stub, "IPO", a[0:5])
 	if err != nil {
 		return nil, err
 	}
+	
+	/*
 
 	a[1] = "Killer"
 	_, err = t.registerTrade(stub, "IPO", a[0:5])
