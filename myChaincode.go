@@ -237,9 +237,9 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	fmt.Printf("Running cash")
 	
 
-	//index, err := t.getNextIndex(stub, tradeIndex)
+	index, err := t.getNextIndex(stub, tradeIndex)
 	
-	bank, err := stub.GetState(bankUser)//"LastTradeIndex")//bankUser)  //userIndex + "BANK")
+	bank, err := stub.GetState(tradeIndex + string(index)) //bankUser)//"LastTradeIndex")//bankUser)  //userIndex + "BANK")
 	if err != nil {
 		return nil, err
 	}
