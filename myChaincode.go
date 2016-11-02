@@ -102,7 +102,6 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	}
 
 	
-	//err := stub.PutState("BANK", []byte("TEST")) //userIndex + user.UserID, u)  //maybe make user1  the bank?  
 	err = stub.PutState(bankUser, u)
 	if err != nil {
 		return nil, err
@@ -113,41 +112,35 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	var a [6]string
 	
 	a[0] = "Jaime"	//character
-
-	
-	fmt.Printf(a[0])
-	fmt.Printf(a[1])
-
-	/*
 	a[1] = "Killed" //action
 	a[2] = strconv.Itoa(defaultPrice)		//cost per share
 	a[3] = "100"		//number of shares
 	a[4] = ""
 	a[5] = "BANK"
 
-	_, err = t.registerTrade(stub, "IPO", a)
+	_, err = t.registerTrade(stub, "IPO", a[0:5])
 	if err != nil {
 		return nil, err
 	}
 
 	a[1] = "Killer"
-	_, err = t.registerTrade(stub, "IPO", a)
+	_, err = t.registerTrade(stub, "IPO", a[0:5])
 	if err != nil {
 		return nil, err
 	}
 
 	a[0] = "Jon"
-	_, err = t.registerTrade(stub, "IPO", a)
+	_, err = t.registerTrade(stub, "IPO", a[0:5])
 	if err != nil {
 		return nil, err
 	}
 	
 	a[1] = "Killed"
-	_, err = t.registerTrade(stub, "IPO", a)
+	_, err = t.registerTrade(stub, "IPO", a[0:5])
 	if err != nil {
 		return nil, err
 	}
-*/
+
 
 	return nil, nil
 }
