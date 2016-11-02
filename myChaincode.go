@@ -113,12 +113,13 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	var a []string
 	
 	a[0] = "Jaime"	//character
+/*
 	a[1] = "Killed" //action
 	a[2] = strconv.Itoa(defaultPrice)		//cost per share
 	a[3] = "100"		//number of shares
 	a[4] = ""
 	a[5] = "BANK"
-/*	
+
 	_, err = t.registerTrade(stub, "IPO", a)
 	if err != nil {
 		return nil, err
