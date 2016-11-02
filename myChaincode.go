@@ -325,15 +325,16 @@ func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType stri
 	trade.Status = "Open"
 	trade.Expiry = args[4]
 	trade.Fulfilled = 0
-	/*
+	
 	
 	// Write the state back to the ledger
-	temp, err := json.Marshal(trade)
+	//temp
+	_, err = json.Marshal(trade)
 	if err != nil {
 		return nil, err
 	}
 	
-	
+	/*
 	index, err := t.push(stub, tradeIndex, temp)
 	if err != nil {
 		return nil, err
