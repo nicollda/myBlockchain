@@ -110,11 +110,10 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	
 	// initially offer some happenings
 
-	//var a []string
+	var a [6]string
 	
-	a := []string {"Jaime", "asdfasdf", "hjfhj"}	//character
-	
-	a[2] = "hjfhjf"
+	a[0] = "Jaime"	//character
+
 	
 	fmt.Printf(a[0])
 	fmt.Printf(a[1])
