@@ -392,7 +392,7 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, lastIDString st
 // need to make a persistance class / data abstraction
 func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, value []byte) ([]byte, error) {
 	fmt.Printf("Running Push")
-	
+	/*
 	index, err := t.getNextIndex(stub, "Last" + structureName)
 	if err != nil {
 		return nil, err
@@ -408,8 +408,8 @@ func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, v
 	if err != nil {
 		return nil, err
 	}
-	
-	return index, nil
+	*/
+	return nil, nil
 }	
 
 
