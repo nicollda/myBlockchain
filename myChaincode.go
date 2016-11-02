@@ -345,7 +345,7 @@ func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, v
 // user offers a square for sale asking for x for y units
 func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, structureName string) ([]byte, error) {
 	fmt.Printf("Running getNextIndex")
-	
+	/*
 	var lastID int
 	
 	lastIDByteA, err := stub.GetState("Last" + structureName)
@@ -371,7 +371,7 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, structureName s
 	return newLastIDByteA, nil
 	
 	*/
-	
+	stub.GetState("Last" + structureName)
 	return []byte("1"), nil
 }
 
