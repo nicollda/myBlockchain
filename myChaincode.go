@@ -114,8 +114,10 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	
 	a := []string {"Jaime", "asdfasdf"}	//character
 	
-	fmt.Printf(a[0])
+	a[2] = "hjfhjf"
 	
+	fmt.Printf(a[0])
+	fmt.Printf(a[1])
 
 	/*
 	a[1] = "Killed" //action
