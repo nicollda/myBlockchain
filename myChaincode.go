@@ -237,9 +237,7 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	fmt.Printf("Running cash")
 	
 
-	index, err := t.getNextIndex(stub, tradeIndex)
-	
-	bank, err := stub.GetState(tradeIndex + string(index)) //bankUser)//"LastTradeIndex")//bankUser)  //userIndex + "BANK")
+	bank, err := stub.GetState(tradeIndex + "1") //bankUser)//"LastTradeIndex")//bankUser)  //userIndex + "BANK")
 	if err != nil {
 		return nil, err
 	}
@@ -254,6 +252,13 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	}
 	
 */
+
+
+	_, err = t.getNextIndex(stub, tradeIndex)
+	if err != nil {
+		return nil, err
+	}
+
 	
 	return bank, nil//[]byte(strconv.Itoa(user.Cash)), nil
 	
@@ -384,7 +389,7 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, structureName s
 	lastIDByteA = []byte(strconv.Itoa(lastID))   
 	err = stub.PutState("Last" + structureName, lastIDByteA)
 	if err != nil {
-		return []byte("1"), nil
+		return nil, err
 	}
 
 	
