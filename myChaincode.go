@@ -345,28 +345,29 @@ func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, v
 // user offers a square for sale asking for x for y units
 func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, structureName string) ([]byte, error) {
 	fmt.Printf("Running getNextIndex")
-	/*
-	var id int
+
+	var lastID int
 	
-	lastIDByteA, err := stub.GetState("Last" + StructureName)
+	lastIDByteA, err := stub.GetState("Last" + structureName)
 	if err != nil {
-		id = 1
+		lastID = 1
 	} else { 
-		lastIDString, err := strconv.Atoi(string(lastIDByteA))
+		lastID, err = strconv.Atoi(string(lastIDByteA))
 		if err != nil {
 			return nil, err
 		}
-		id = lastIDString + 1
+		
+		lastID = lastID + 1
 	}
 	
 	
-	newLastIDByteA := []byte(strconv.Itoa(id))   
-	err = stub.PutState(lastIDString, newLastIDByteA)
+	lastIDByteA = []byte(strconv.Itoa(lastID))   
+	err = stub.PutState("Last" + structureName, lastIDByteA)
 	if err != nil {
 		return nil, err
 	}
 
-
+/*
 	return newLastIDByteA, nil
 	
 	*/
