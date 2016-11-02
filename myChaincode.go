@@ -296,19 +296,21 @@ func (t *SimpleChaincode) registerUser(stub *shim.ChaincodeStub, args []string) 
 // initial public offering for a square
 func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType string, args []string) ([]byte, error) {
 	fmt.Printf("Running registerTrade")
-	/*
+	
 	if len(args) != 6 {
 		return nil, errors.New("Incorrect number of arguments. Expecting registerTrade(character, event, price, units, expiry, user)")
 	}
 	
 	var trade Trade
-	var err error
 	
 	if tradeType == "IPO" {
 		trade.Entity = "BANK"  // who is the source user
 	} else { 
 		trade.Entity = args[5]  //should get this from the security mechanism...  dont know how that works
 	}
+	
+	
+	/* 
 	
 	trade.Char = args[0]
 	trade.Event = args[1]
