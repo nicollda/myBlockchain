@@ -393,12 +393,12 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, lastIDString st
 func (t *SimpleChaincode) push(stub *shim.ChaincodeStub, structureName string, value []byte) ([]byte, error) {
 	fmt.Printf("Running Push")
 	
-	index, err := t.getNextIndex(stub, "Last" + structureName)
+	_, err := t.getNextIndex(stub, "Last" + structureName)
 	if err != nil {
 		return nil, err
 	}
 	
-	index=index
+	//index=index
 /*
 	// Write the state back to the ledger
 	var key string
