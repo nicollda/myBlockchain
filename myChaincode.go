@@ -383,9 +383,9 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, structureName s
 	
 	lastIDByteA = []byte(strconv.Itoa(lastID))   
 	err = stub.PutState("Last" + structureName, lastIDByteA)
-	//if err != nil {
-	//	return nil, err
-//	}
+	if err != nil {
+		return []byte("1"), nil
+	}
 
 	
 	fmt.Printf(strconv.Itoa(lastID))
