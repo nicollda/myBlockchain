@@ -175,9 +175,11 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
-	/*
+	
 	c := []string{"Jamie", "Killed"}
-	_, err = t.registerHappening(stub, c)
+	c[0] = c[0]
+	
+	/*_, err = t.registerHappening(stub, c)
 	if err != nil {
 		t.writeOut(stub, "in init: after registerHeppeing in err != nil")
 		return nil, err
