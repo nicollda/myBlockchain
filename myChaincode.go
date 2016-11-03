@@ -166,8 +166,11 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
+	
+	t.writeOut(stub, "in init: before exchange")
 	_, err = t.exchange(stub)
 	if err != nil {
+		t.writeOut(stub, "in init: after exhcnage in err != nil")
 		return nil, err
 	}
 	
