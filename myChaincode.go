@@ -437,6 +437,8 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, structureName s
 func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	fmt.Printf("Running registerHappening")
 	
+	t.writeOut(stub, "in registerHappening")
+	
 	var shareKey HappeningRegister
 	var numberUsers int
 	var currentUser User
@@ -444,22 +446,18 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 	shareKey.Char = args[0]
 	shareKey.Event = args[1]
 	
-	//register a happening - is this nessesary?
-	shareKeyByteA, err := json.Marshal(shareKey)
-	if err != nil {
-		return nil, err
-	}
-	
-	_, err = t.push(stub, happeningIndex, shareKeyByteA)
-	if err != nil {
-		return nil, err
-	}
-	
-	
 	//todo: need to make data abstraction
 	numberUsersByteA, err := stub.GetState("Last" + userIndex)
-	numberUsers, err = strconv.Atoi(string(numberUsersByteA))
+	if err != nil {
+		return nil, err
+	}
 	
+	numberUsers, err = strconv.Atoi(string(numberUsersByteA))
+	if err != nil {
+		return nil, err
+	}
+	
+	t.writeOut(stub, "in registerHappening: before for loop")
 	//For each user
 	for i := 1; i <= numberUsers; i++ {
 		currentUserByteA, err := stub.GetState(userIndex + strconv.Itoa(i))
@@ -497,6 +495,7 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 		}	
 	}
 	
+	t.writeOut(stub, "in registerHappening: before return")
 	return nil,nil
 }
 
