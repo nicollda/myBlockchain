@@ -507,6 +507,8 @@ func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
 			return nil, err
 	}
 	
+	
+	t.writeOut(stub, "in exchange: before matching loop")
 	//trade matching loop
 	for b := 1; b <= numberTrades; b++{
 		bTradeByteA, err := stub.GetState(tradeIndex + strconv.Itoa(b))
@@ -531,6 +533,7 @@ func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
 			}
 			
 			if sellTrade.Status == "Open" && buyTrade.Status == "Open" && sellTrade.Action == "Ask" && buyTrade.Action == "Bid" && sellTrade.Char == buyTrade.Char && sellTrade.Event == buyTrade.Event {
+				t.writeOut(stub, "in exchange: before executeTrade")
 				_, err := t.executeTrade(stub, b, buyTrade, s, sellTrade)
 				
 				if err != nil {
@@ -540,6 +543,8 @@ func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
 		}	
 	}
 	
+	
+	t.writeOut(stub, "in exchnage: before return")
 	return nil, nil
 }
 
