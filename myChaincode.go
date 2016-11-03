@@ -476,9 +476,8 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 func (t *SimpleChaincode) writeOut(stub *shim.ChaincodeStub, out string) ([]byte, error) {
 	
 	if debug {
-		curOutByteA,err := stub.GetState("currentOutput")
-		
-		outByteA := []byte(string(curOutByteA) + "-->" + out)
+		curOutByteA,err := stub.GetState("currentOutput")		
+		outByteA := []byte(string(curOutByteA) + ":::" + out)
 		err = stub.PutState("currentOutput", outByteA)
 		return nil, err
 	}
@@ -537,6 +536,8 @@ func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
 				return nil, err
 			}
 			
+			
+			t.writeOut(stub, sellTrade.Status)
 			if sellTrade.Status == "Open" && buyTrade.Status == "Open" && sellTrade.Action == "Ask" && buyTrade.Action == "Bid" && sellTrade.Char == buyTrade.Char && sellTrade.Event == buyTrade.Event {
 				t.writeOut(stub, "in exchange: before executeTrade")
 				_, err := t.executeTrade(stub, b, buyTrade, s, sellTrade)
