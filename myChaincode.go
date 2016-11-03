@@ -291,7 +291,6 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	shareKey.Char = "Jaime"
 	shareKey.Event = "Killed"
 	
-	//adjust Holdings for buyer and seller
 	shareKeyByteA, err := json.Marshal(shareKey)
 	if err != nil {
 		return nil, err
@@ -476,6 +475,7 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 			return nil, err
 		}
 		
+		t.writeOut(stub, "in registerHappening: sharesKeyByteA=" + string(shareKeyByteA))
 		numberSharesByteA, err := stub.GetState(string(shareKeyByteA))
 		numberShares, err := strconv.Atoi(string(numberSharesByteA))
 		
