@@ -157,6 +157,13 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
+	//register some trades
+	b := []string{"Jaime", "Killed", strconv.Itoa(defaultPrice), "100", "", "Aaron"}
+	_, err = t.registerTrade(stub, "Bid", b)
+	if err != nil {
+		return nil, err
+	}
+	
 	return nil, nil
 }
 
@@ -251,7 +258,7 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	fmt.Printf("Running cash")
 	
 	
-	bank, err := stub.GetState(userIndex + "2") //bankUser)//"LastTradeIndex")//bankUser)  //userIndex + "BANK")
+	bank, err := stub.GetState(tradeIndex + "5") //bankUser)//"LastTradeIndex")//bankUser)  //userIndex + "BANK")
 	if err != nil {
 		return nil, err
 	}
