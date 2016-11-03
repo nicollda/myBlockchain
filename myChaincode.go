@@ -310,14 +310,15 @@ func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType stri
 	
 	if tradeType == "IPO" {
 		trade.Entity = "BANK"  // who is the source user
+		trade.Action = "Ask"
 	} else { 
 		trade.Entity = args[5]  //should get this from the security mechanism...  dont know how that works
+		trade.Action = tradeType
 	}
 		
 	
 	trade.Char = args[0]
 	trade.Event = args[1]
-	trade.Action = tradeType
 	trade.Price, err = strconv.ParseFloat(args[2], 64)
 	if err != nil {
 		return nil, err
@@ -537,7 +538,7 @@ func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
 			}
 			
 			
-			t.writeOut(stub, sellTrade.Status)
+			//t.writeOut(stub, sellTrade.Status + " " + ")
 			if sellTrade.Status == "Open" && buyTrade.Status == "Open" && sellTrade.Action == "Ask" && buyTrade.Action == "Bid" && sellTrade.Char == buyTrade.Char && sellTrade.Event == buyTrade.Event {
 				t.writeOut(stub, "in exchange: before executeTrade")
 				_, err := t.executeTrade(stub, b, buyTrade, s, sellTrade)
