@@ -164,6 +164,10 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
+	_, err = t.exchange(stub)
+	if err != nil {
+		return nil, err
+	}
 	return nil, nil
 }
 
@@ -199,7 +203,7 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	} else if function == "exchange" {
 		// matches trades and excecutes any matches
 		fmt.Printf("Function is exchange")
-		return t.exchange(stub, args)
+		return t.exchange(stub)
 	} else if function == "registeruser" {
 		// matches trades and excecutes any matches
 		fmt.Printf("Function is registeruser")
@@ -393,10 +397,6 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, structureName s
 
 
 
-
-
-
-
 // called by the moderator watson?  to specify that an event happened pay it out
 func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	fmt.Printf("Running registerHappening")
@@ -478,7 +478,7 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 // 		ignore expiry
 //		ignore if the counterparties have the security
 //		or if user is active
-func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
 	fmt.Printf("Running exchange")
 	
 	
