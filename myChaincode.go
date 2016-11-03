@@ -179,7 +179,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	c := []string{"Jamie", "Killed"}
 	c[0] = c[0]
 	
-	//_, err = t.registerHappening(stub, c)
+	_, err = t.registerHappening(stub, c)
 	
 	if err != nil {
 		t.writeOut(stub, "in init: after registerHeppeing in err != nil")
@@ -482,8 +482,10 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 		t.writeOut(stub, "in registerHappening: before big if")
 		
 		if err == nil {  //means the user has stock in this security
+			t.writeOut(stub, "in registerHappening: after big if")
+			
 			if currentUser.Status == "Active" && numberShares > 0 {
-				t.writeOut(stub, "in registerHappening: in middle if")
+				t.writeOut(stub, "in registerHappening: in middle if: " + currentUser.UserID)
 				
 				currentUser.Cash = currentUser.Cash + payout				//todo:  should be transfer of funds not "creating money".  
 				
