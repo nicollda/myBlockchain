@@ -176,8 +176,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	}
 	
 	
-	c := []string{"Jamie", "Killed"}
-	c[0] = c[0]
+	c := []string{"Jaime", "Killed"}
 	
 	_, err = t.registerHappening(stub, c)
 	
