@@ -47,6 +47,7 @@ const initialCash =		1000
 const payout =			5
 const defaultPrice =	5
 const bankUser =		userIndex + "BANK"
+const debug = 			true
 
 
 
@@ -474,10 +475,14 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 
 func (t *SimpleChaincode) writeOut(stub *shim.ChaincodeStub, out string) ([]byte, error) {
 	
-	outByteA := []byte(out)
-	err := stub.PutState("currentOutput", outByteA)
-	
-	return nil, err
+	if debug {
+		curOutByteA,err := stub.GetState("currentOutput")
+		
+		outByteA := []byte(string(curOutByteA) + "-->" + out)
+		err = stub.PutState("currentOutput", outByteA)
+		return nil, err
+	}
+	return nil, nil
 }
 
 
@@ -544,7 +549,7 @@ func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
 	}
 	
 	
-	t.writeOut(stub, "in exchnage: before return")
+	t.writeOut(stub, "in exchange: before return")
 	return nil, nil
 }
 
