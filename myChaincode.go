@@ -89,6 +89,8 @@ type SimpleChaincode struct {
 func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Printf("Init called, initializing chaincode")
 	
+	t.writeOut(stub, "in init")
+	
 	//create a bank with some money
 	var user User
 	user.UserID = "BANK"
