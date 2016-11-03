@@ -476,6 +476,8 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 		
 		numberSharesByteA, err := stub.GetState(string(shareKeyByteA))
 		
+		t.writeOut(stub, "in registerHappening: before big if")
+		
 		if err == nil {  //means the user has stock in this security
 			numberShares, err := strconv.Atoi(string(numberSharesByteA))
 			if err != nil {
