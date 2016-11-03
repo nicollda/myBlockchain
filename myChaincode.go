@@ -168,6 +168,8 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	if err != nil {
 		return nil, err
 	}
+	
+	
 	return nil, nil
 }
 
@@ -262,7 +264,7 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	fmt.Printf("Running cash")
 	
 	
-	bank, err := stub.GetState(tradeIndex + "5") //bankUser)//"LastTradeIndex")//bankUser)  //userIndex + "BANK")
+	bank, err := stub.GetState("CurrentOutput") //tradeIndex + "5") //bankUser)//"LastTradeIndex")//bankUser)  //userIndex + "BANK")
 	if err != nil {
 		return nil, err
 	}
@@ -465,9 +467,13 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 }
 
 
-
-
-
+func (t *SimpleChaincode) writeOut(stub *shim.ChaincodeStub, out string) ([]byte, error) {
+	
+	outByteA := []byte(out)
+	err := stub.PutState("currentOutput", outByteA)
+	
+	return nil, err
+}
 
 
 
@@ -481,6 +487,7 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
 	fmt.Printf("Running exchange")
 	
+	t.writeOut(stub, "in exchange")
 	
 	var buyTrade		Trade
 	var sellTrade		Trade
@@ -548,8 +555,8 @@ func (t *SimpleChaincode) executeTrade(stub *shim.ChaincodeStub, buyTradeIndex i
 	var buyUser 	User
 	var buyerIndex	int
 	var sellUser 	User
-	var sellerIndex int
-	var numberUsers int
+	var sellerIndex	int
+	var numberUsers	int
 	var tempUser	User
 	
 	
@@ -557,8 +564,8 @@ func (t *SimpleChaincode) executeTrade(stub *shim.ChaincodeStub, buyTradeIndex i
 	if err != nil {
 		return nil, err
 	}
-	numberUsers, err = strconv.Atoi(string(numberUsersByteA))
 	
+	numberUsers, err = strconv.Atoi(string(numberUsersByteA))
 	if err != nil {
 		return nil, err
 	}
