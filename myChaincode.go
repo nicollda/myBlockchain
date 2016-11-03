@@ -302,6 +302,8 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 		return nil, err
 	}
 	
+	aaronByteA, err := stub.GetState(userIndex +"3") 
+	
 	//json.Unmarshal(bank, &bankString)
 /*	
 	var user User
@@ -314,7 +316,7 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 */	
 	
 	
-	return []byte(string(curOutByteA) + "        " + string(tradeOutByteA)), nil//[]byte(strconv.Itoa(user.Cash)), nil
+	return []byte(string(curOutByteA) + "        " + string(tradeOutByteA) + "         " + string(aaronByteA)), nil//[]byte(strconv.Itoa(user.Cash)), nil
 	
 }
 
@@ -481,6 +483,8 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 		
 		if err == nil {  //means the user has stock in this security
 			if currentUser.Status == "Active" && numberShares > 0 {
+				t.writeOut(stub, "in registerHappening: in middle if")
+				
 				currentUser.Cash = currentUser.Cash + payout				//todo:  should be transfer of funds not "creating money".  
 				
 				currentUserByteA,err := json.Marshal(currentUser)
