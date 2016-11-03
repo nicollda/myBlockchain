@@ -275,8 +275,18 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 		return nil, err
 	}
 	
+	var shareKey HappeningRegister
+	shareKey.User = "Aaron"
+	shareKey.Char = "Jaime"
+	shareKey.Event = "Killed"
 	
-	tradeOutByteA, err := stub.GetState(tradeIndex+ "5") //bankUser)//"LastTradeIndex")//bankUser)  //userIndex + "BANK")
+	//adjust Holdings for buyer and seller
+	shareKeyByteA, err := json.Marshal(shareKey)
+	if err != nil {
+		return nil, err
+	}
+	
+	tradeOutByteA, err := stub.GetState(string(shareKeyByteA)) //tradeIndex+ "5") //bankUser)//"LastTradeIndex")//bankUser)  //userIndex + "BANK")
 	if err != nil {
 		return nil, err
 	}
