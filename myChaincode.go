@@ -301,7 +301,7 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 
 
 
-	
+
 
 // initial public offering for a square
 func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType string, args []string) ([]byte, error) {
@@ -321,7 +321,7 @@ func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType stri
 		trade.Entity = args[5]  //should get this from the security mechanism...  dont know how that works
 		trade.Action = tradeType
 	}
-		
+	
 	
 	trade.Char = args[0]
 	trade.Event = args[1]
@@ -439,7 +439,7 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 	numberUsersByteA, err := stub.GetState("Last" + userIndex)
 	numberUsers, err = strconv.Atoi(string(numberUsersByteA))
 	
-	
+	//For each user
 	for i := 1; i <= numberUsers; i++ {
 		currentUserByteA, err := stub.GetState(userIndex + strconv.Itoa(i))
 		err = json.Unmarshal(currentUserByteA, &currentUser)
@@ -447,7 +447,7 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 			return nil, err
 		}
 		
-		
+		//create a string to look up the number of shares using , userid, char and event.  the result is number of shares
 		shareKey.User = currentUser.UserID
 		
 		shareKeyByteA, err := json.Marshal(shareKey)
@@ -457,7 +457,7 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 		
 		numberSharesByteA, err := stub.GetState(string(shareKeyByteA))
 		
-		if err == nil {	  //means the user has stock in this security
+		if err == nil {  //means the user has stock in this security
 			numberShares, err := strconv.Atoi(string(numberSharesByteA))
 			if err != nil {
 				return nil, err
@@ -496,8 +496,8 @@ func (t *SimpleChaincode) writeOut(stub *shim.ChaincodeStub, out string) ([]byte
 // run on a schedule to execute any pending trades. matching asks with bids and updating the ledger
 // first iteration will:
 //		only match buyer and seller based on ticker and not on bid and ask prices.  this will simplify and elimiate items we are not trying to prove
-//      assume one one share per trade.  this will elimate having to match the number of trades from buy with the sell
-// 		ignore expiry
+//		assume one one share per trade.  this will elimate having to match the number of trades from buy with the sell
+//		ignore expiry
 //		ignore if the counterparties have the security
 //		or if user is active
 func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
@@ -505,17 +505,17 @@ func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
 	
 	t.writeOut(stub, "in exchange")
 	
-	var buyTrade		Trade
-	var sellTrade		Trade
+	var buyTrade	Trade
+	var sellTrade	Trade
 	
 	numberTradesByteA, err := stub.GetState("Last" + tradeIndex)  //should be through data layer
 	if err != nil {
-			return nil, err
+		return nil, err
 	}
 	
 	numberTrades, err := strconv.Atoi(string(numberTradesByteA))
 	if err != nil {
-			return nil, err
+		return nil, err
 	}
 	
 	
@@ -583,6 +583,7 @@ func (t *SimpleChaincode) executeTrade(stub *shim.ChaincodeStub, buyTradeIndex i
 	var tempUser	User
 	
 	
+	
 	numberUsersByteA, err := stub.GetState("Last" + userIndex)  //should be through data layer
 	if err != nil {
 		return nil, err
@@ -593,6 +594,7 @@ func (t *SimpleChaincode) executeTrade(stub *shim.ChaincodeStub, buyTradeIndex i
 		return nil, err
 	}
 	
+	//finds the counterparties involved
 	//this is no good.  should have another hash to get the index of the user in the array or maybe store it in the trades?
 	for i := 1; i <= numberUsers; i++ {
 		userByteA, err := stub.GetState(userIndex + strconv.Itoa(i))
@@ -627,6 +629,9 @@ func (t *SimpleChaincode) executeTrade(stub *shim.ChaincodeStub, buyTradeIndex i
 		}
 	}
 	
+	
+	
+	//transfers funds and closes the trades
 	buyUser.Cash = buyUser.Cash - defaultPrice
 	sellUser.Cash = sellUser.Cash + defaultPrice
 	buyTrade.Status = "Closed"
@@ -643,15 +648,19 @@ func (t *SimpleChaincode) executeTrade(stub *shim.ChaincodeStub, buyTradeIndex i
 		return nil, err
 	}
 	
+	//Saves the changes to the buyer
 	err = stub.PutState(userIndex + strconv.Itoa(buyerIndex), buyUserByteA)
 	if err != nil {
 		return nil, err
 	}
 	
+	
+	//Saves the changes to the seller
 	err = stub.PutState(userIndex + strconv.Itoa(sellerIndex), sellUserByteA)
 	if err != nil {
 		return nil, err
 	}
+	
 	
 	buyTradeByteA, err := json.Marshal(buyTrade)
 	if err != nil {
@@ -663,14 +672,45 @@ func (t *SimpleChaincode) executeTrade(stub *shim.ChaincodeStub, buyTradeIndex i
 		return nil, err
 	}
 	
+	
+	//Saves the changes to the buy trade
 	err = stub.PutState(tradeIndex + strconv.Itoa(buyTradeIndex), buyTradeByteA)
 	if err != nil {
 		return nil, err
 	}
 	
+	
+	//saves the changes to the sell trade
 	err = stub.PutState(tradeIndex + strconv.Itoa(sellTradeIndex), sellTradeByteA)
 	if err != nil {
 		return nil, err
+	}
+	
+	var shareKey HappeningRegister
+	shareKey.User = buyTrade.Entity
+	shareKey.Char = buyTrade.Char
+	shareKey.Event = buyTrade.Event
+	
+	//adjust Holdings for buyer and seller
+	shareKeyByteA, err := json.Marshal(shareKey)
+	if err != nil {
+		return nil, err
+	}
+	
+	unitsString:= strconv.Itoa(buyTrade.Units)
+	err = stub.PutState(string(shareKeyByteA), []byte(unitsString))
+	if err != nil {
+		return nil, err
+	}
+	
+	if sellTrade.Entity != "BANK" {
+		shareKey.User = sellTrade.Entity
+		
+		//remove holdings from seller.  should really only delstate if units = 0 but this is not inplimented
+		err = stub.DelState(string(shareKeyByteA))
+		if err != nil {
+			return nil, err
+		}
 	}
 	
 	return nil, nil
