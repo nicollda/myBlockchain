@@ -475,19 +475,15 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 		}
 		
 		numberSharesByteA, err := stub.GetState(string(shareKeyByteA))
+		numberShares, err := strconv.Atoi(string(numberSharesByteA))
 		
 		t.writeOut(stub, "in registerHappening: before big if")
 		
 		if err == nil {  //means the user has stock in this security
-			numberShares, err := strconv.Atoi(string(numberSharesByteA))
-			if err != nil {
-				return nil, err
-			}
-			
 			if currentUser.Status == "Active" && numberShares > 0 {
-				currentUser.Cash = currentUser.Cash + payout	//todo:  should be transfer of funds not "creating money".  
-				currentUserByteA,err := json.Marshal(currentUser)
+				currentUser.Cash = currentUser.Cash + payout				//todo:  should be transfer of funds not "creating money".  
 				
+				currentUserByteA,err := json.Marshal(currentUser)
 				if err != nil {
 					return nil, err
 				}
