@@ -167,7 +167,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	}
 	
 	
-	c := []string{"Jaime", "Killed"}
+	c := []string{"Jaime,Killed"}
 	
 	_, err = t.dividend(stub, c)
 	
