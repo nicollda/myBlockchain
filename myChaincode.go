@@ -19,9 +19,7 @@ under the License.
 
 //todo:  add constants for all string litterals
 //todo:  need to make consitent status.  need better way to take them out of the process when closed
-//todo: data abstraction layer
-//todo: put funtions etc.  in the right order
-//todo: add error trapping
+//todo: data abstraction layer, abstract persistance
 //todo: add security to get user names
 
 
@@ -42,7 +40,7 @@ import (
 const separator = 		"::::"
 const userIndex =		"UserIndex" + separator
 const tradeIndex =		"TradeIndex" + separator
-const happeningIndex = 	"HappeningIndex" + separator
+const holdingIndex = 	"HoldingIndex" + separator
 const initialCash =		1000
 const payout =			5
 const defaultPrice =	5
@@ -52,10 +50,9 @@ const debug = 			true
 
 
 type Trade struct {
-	Entity		string	`json:"entity"`
-	Char		string	`json:"char"`
-	Event		string	`json:"event"`
-	Action		string	`json:"action"`
+	UserID		string	`json:"userid"`
+	SecurityID	string	`json:"securityid"`
+	TransType	string	`json:"transtype"`
 	Price		float64	`json:"price"`
 	Units		int		`json:"units"`
 	Status		string	`json:"status"`
@@ -64,16 +61,15 @@ type Trade struct {
 }
 
 
-type HappeningRegister struct {
-	Char		string	`json:"char"`
-	Event		string	`json:"event"`
-	User		string	`json:"user"`
+type Holdings struct {
+	SecurityID		string	`json:"securityid"`
+	UserID		string	`json:"userid"`
 }
 
 type User struct {
 	UserID		string	`json:"userID"`
 	Status		string	`json:"status"`
-	Cash		int		`json:"cash"`
+	Ballance		int		`json:"ballance"`
 }
 
 
@@ -98,7 +94,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	var user User
 	user.UserID = "BANK"
 	user.Status = "Active"
-	user.Cash	= 1000
+	user.Ballance = 1000
 	
 	u, err := json.Marshal(user)
 	if err != nil {
@@ -114,33 +110,26 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	
 	// initially offer some happenings
 	
-	a := []string{"Jaime", "Killed",strconv.Itoa(defaultPrice), "100", "", "BANK"}
-	
-	a[0] = "Jaime"	//character
-	a[1] = "Killed" //action
-	a[2] = strconv.Itoa(defaultPrice)		//cost per share
-	a[3] = "100"		//number of shares
-	a[4] = ""
-	a[5] = "BANK"
+	a := []string{"Jaime,Killed",strconv.Itoa(defaultPrice), "100", "", "BANK"}
 	
 	_, err = t.registerTrade(stub, "IPO", a)
 	if err != nil {
 		return nil, err
 	}
 	
-	a[1] = "Killer"
+	a[0] = "Jaime,Killer"
 	_, err = t.registerTrade(stub, "IPO", a)
 	if err != nil {
 		return nil, err
 	}
 	
-	a[0] = "Jon"
+	a[0] = "Jon,Killed"
 	_, err = t.registerTrade(stub, "IPO", a)
 	if err != nil {
 		return nil, err
 	}
 	
-	a[1] = "Killed"
+	a[0] = "Jon,Killer"
 	_, err = t.registerTrade(stub, "IPO", a)
 	if err != nil {
 		return nil, err
@@ -163,7 +152,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	}
 	
 	//register some trades
-	b := []string{"Jaime", "Killed", strconv.Itoa(defaultPrice), "100", "", "Aaron"}
+	b := []string{"Jaime,Killed", strconv.Itoa(defaultPrice), "100", "", "Aaron"}
 	_, err = t.registerTrade(stub, "Bid", b)
 	if err != nil {
 		return nil, err
@@ -247,7 +236,7 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 		return t.holdings(stub, args)
 	} else if function == "cash" {
 		// query a users cash on hand
-		return t.cash(stub, args)
+		return t.ballance(stub, args)
 	} else if function == "users" {
 		// query for list of users
 		return t.users(stub)
@@ -282,7 +271,7 @@ func main() {
 
 func (t *SimpleChaincode) securities(stub *shim.ChaincodeStub) ([]byte, error) {
 	s := []string {"Jaime,Killed", "Jaime,Killer", "Jon,Killed", "Jon,Killer"}
-
+	
 	sByteA, err := json.Marshal(s)
 	if err != nil {
 		return nil, err
@@ -294,7 +283,7 @@ func (t *SimpleChaincode) securities(stub *shim.ChaincodeStub) ([]byte, error) {
 
 func (t *SimpleChaincode) users(stub *shim.ChaincodeStub) ([]byte, error) {
 	u := []string {"David", "Aaron", "Wesley"}
-
+	
 	uByteA, err := json.Marshal(u)
 	if err != nil {
 		return nil, err
@@ -334,7 +323,7 @@ func (t *SimpleChaincode) holdings(stub *shim.ChaincodeStub, args []string) ([]b
 		}
 		
 		if user.UserID == userID {
-			output = "cash: " + strconv.Itoa(user.Cash)
+			output = "ballance: " + strconv.Itoa(user.Ballance)
 		}
 	}
 	
@@ -342,7 +331,7 @@ func (t *SimpleChaincode) holdings(stub *shim.ChaincodeStub, args []string) ([]b
 	
 }
 
-func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *SimpleChaincode) ballance(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	fmt.Printf("Running cash")
 	
 	
@@ -351,10 +340,10 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 		return nil, err
 	}
 	
-	var shareKey HappeningRegister
-	shareKey.User = "Aaron"
-	shareKey.Char = "Jaime"
-	shareKey.Event = "Killed"
+	var shareKey Holdings
+	shareKey.UserID = "Aaron"
+	shareKey.SecurityID = "Jaime,Killed"
+
 	
 	shareKeyByteA, err := json.Marshal(shareKey)
 	if err != nil {
@@ -366,7 +355,7 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 		return nil, err
 	}
 	
-	aaronByteA, err := stub.GetState(userIndex +"3") 
+	aaronByteA, err := stub.GetState(userIndex + "3") 
 	
 	//json.Unmarshal(bank, &bankString)
 /*	
@@ -381,7 +370,6 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 	
 	
 	return []byte(string(curOutByteA) + "        " + string(tradeOutByteA) + "         " + string(aaronByteA)), nil//[]byte(strconv.Itoa(user.Cash)), nil
-	
 }
 
 
@@ -399,7 +387,7 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType string, args []string) ([]byte, error) {
 	fmt.Printf("Running registerTrade")
 	
-	if len(args) != 6 {
+	if len(args) != 5 {
 		return nil, errors.New("Incorrect number of arguments. Expecting registerTrade(character, event, price, units, expiry, user)")
 	}
 	
@@ -407,26 +395,27 @@ func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType stri
 	var err error
 	
 	if tradeType == "IPO" {
-		trade.Entity = "BANK"  // who is the source user
-		trade.Action = "Ask"
+		trade.UserID = "BANK"  // who is the source user
+		trade.TransType = "Ask"
 	} else { 
-		trade.Entity = args[5]  //should get this from the security mechanism...  dont know how that works
-		trade.Action = tradeType
+		trade.UserID = args[4]  //should get this from the security mechanism...  dont know how that works
+		trade.TransType = tradeType
 	}
 	
 	
-	trade.Char = args[0]
-	trade.Event = args[1]
-	trade.Price, err = strconv.ParseFloat(args[2], 64)
+	trade.SecurityID = args[0]
+	trade.Price, err = strconv.ParseFloat(args[1], 64)
 	if err != nil {
 		return nil, err
 	}
-	trade.Units, err = strconv.Atoi(args[3])
+	
+	trade.Units, err = strconv.Atoi(args[2])
 	if err != nil {
 		return nil, err
 	}
+	
 	trade.Status = "Open"
-	trade.Expiry = args[4]
+	trade.Expiry = args[3]
 	trade.Fulfilled = 0
 	
 	
@@ -438,6 +427,11 @@ func (t *SimpleChaincode) registerTrade(stub *shim.ChaincodeStub, tradeType stri
 	
 	
 	index, err := t.push(stub, tradeIndex, temp)
+	if err != nil {
+		return nil, err
+	}
+	
+	_, err = t.exchange(stub)
 	if err != nil {
 		return nil, err
 	}
@@ -510,12 +504,12 @@ func (t *SimpleChaincode) dividend(stub *shim.ChaincodeStub, args []string) ([]b
 	
 	t.writeOut(stub, "in dividend")
 	
-	var shareKey HappeningRegister
+	var shareKey Holdings
 	var numberUsers int
 	var currentUser User
 	
-	shareKey.Char = args[0]
-	shareKey.Event = args[1]
+	shareKey.SecurityID = args[0]
+	
 	
 	//todo: need to make data abstraction
 	numberUsersByteA, err := stub.GetState("Last" + userIndex)
@@ -538,7 +532,7 @@ func (t *SimpleChaincode) dividend(stub *shim.ChaincodeStub, args []string) ([]b
 		}
 		
 		//create a string to look up the number of shares using , userid, char and event.  the result is number of shares
-		shareKey.User = currentUser.UserID
+		shareKey.UserID = currentUser.UserID
 		
 		shareKeyByteA, err := json.Marshal(shareKey)
 		if err != nil {
@@ -552,7 +546,7 @@ func (t *SimpleChaincode) dividend(stub *shim.ChaincodeStub, args []string) ([]b
 		if err == nil {  //means the user has stock in this security
 			if currentUser.Status == "Active" && numberShares > 0 {
 				
-				currentUser.Cash = currentUser.Cash + payout		//todo:  should be transfer of funds not "creating money".  
+				currentUser.Ballance = currentUser.Ballance + payout		//todo:  should be transfer of funds not "creating money".  
 				
 				currentUserByteA,err := json.Marshal(currentUser)
 				if err != nil {
@@ -570,13 +564,13 @@ func (t *SimpleChaincode) dividend(stub *shim.ChaincodeStub, args []string) ([]b
 
 
 func (t *SimpleChaincode) writeOut(stub *shim.ChaincodeStub, out string) ([]byte, error) {
-	
 	if debug {
 		curOutByteA,err := stub.GetState("currentOutput")		
 		outByteA := []byte(string(curOutByteA) + ":::" + out)
 		err = stub.PutState("currentOutput", outByteA)
 		return nil, err
 	}
+	
 	return nil, nil
 }
 
@@ -634,7 +628,7 @@ func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
 			
 			
 			//t.writeOut(stub, sellTrade.Status + " " + ")
-			if sellTrade.Status == "Open" && buyTrade.Status == "Open" && sellTrade.Action == "Ask" && buyTrade.Action == "Bid" && sellTrade.Char == buyTrade.Char && sellTrade.Event == buyTrade.Event {
+			if sellTrade.Status == "Open" && buyTrade.Status == "Open" && sellTrade.TransType == "Ask" && buyTrade.TransType == "Bid" && sellTrade.SecurityID == buyTrade.SecurityID {
 				t.writeOut(stub, "in exchange: before executeTrade")
 				_, err := t.executeTrade(stub, b, buyTrade, s, sellTrade)
 				
@@ -696,18 +690,18 @@ func (t *SimpleChaincode) executeTrade(stub *shim.ChaincodeStub, buyTradeIndex i
 			return nil, err
 		}
 		
-		if buyTrade.Entity == tempUser.UserID {
+		if buyTrade.UserID == tempUser.UserID {
 			buyUser = tempUser
 			buyerIndex = i
 		}
 		
-		if sellTrade.Entity == tempUser.UserID {
+		if sellTrade.UserID == tempUser.UserID {
 			sellUser = tempUser
 			sellerIndex = i
 		}
 	}
 	
-	if sellTrade.Entity == "BANK" {
+	if sellTrade.UserID == "BANK" {
 		sellerUserByteA, err := stub.GetState(userIndex + "BANK")
 		if err != nil {
 			return nil, err
@@ -721,8 +715,8 @@ func (t *SimpleChaincode) executeTrade(stub *shim.ChaincodeStub, buyTradeIndex i
 	
 	
 	//transfers funds and closes the trades
-	buyUser.Cash = buyUser.Cash - defaultPrice
-	sellUser.Cash = sellUser.Cash + defaultPrice
+	buyUser.Ballance = buyUser.Ballance - defaultPrice
+	sellUser.Ballance = sellUser.Ballance + defaultPrice
 	buyTrade.Status = "Closed"
 	sellTrade.Status = "Closed"
 	
@@ -775,10 +769,9 @@ func (t *SimpleChaincode) executeTrade(stub *shim.ChaincodeStub, buyTradeIndex i
 		return nil, err
 	}
 	
-	var shareKey HappeningRegister
-	shareKey.User = buyTrade.Entity
-	shareKey.Char = buyTrade.Char
-	shareKey.Event = buyTrade.Event
+	var shareKey Holdings
+	shareKey.UserID = buyTrade.UserID
+	shareKey.SecurityID = buyTrade.SecurityID
 	
 	//adjust Holdings for buyer and seller
 	shareKeyByteA, err := json.Marshal(shareKey)
@@ -792,8 +785,8 @@ func (t *SimpleChaincode) executeTrade(stub *shim.ChaincodeStub, buyTradeIndex i
 		return nil, err
 	}
 	
-	if sellTrade.Entity != "BANK" {
-		shareKey.User = sellTrade.Entity
+	if sellTrade.UserID != "BANK" {
+		shareKey.UserID = sellTrade.UserID
 		
 		//remove holdings from seller.  should really only delstate if units = 0 but this is not inplimented
 		err = stub.DelState(string(shareKeyByteA))
@@ -817,7 +810,7 @@ func (t *SimpleChaincode) registerUser(stub *shim.ChaincodeStub, userID string) 
 	
 	user.UserID = userID
 	user.Status = "Active"
-	user.Cash	= initialCash
+	user.Ballance = initialCash
 	
 	userByteA, err := json.Marshal(user)
 	if err != nil {
