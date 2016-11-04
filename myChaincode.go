@@ -83,7 +83,9 @@ type SimpleChaincode struct {
 }
 
 
-
+//********************************************************************************************************
+//****      Blockchain API functions                                                                  ****
+//********************************************************************************************************
 
 
 //Init the blockchain.  populate a 2x2 grid of potential events for users to buy
@@ -178,7 +180,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	
 	c := []string{"Jaime", "Killed"}
 	
-	_, err = t.registerHappening(stub, c)
+	_, err = t.dividend(stub, c)
 	
 	if err != nil {
 		t.writeOut(stub, "in init: after registerHeppeing in err != nil")
@@ -214,10 +216,10 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 		// enter an ask to sell a square
 		fmt.Printf("Function is ask")
 		return t.registerTrade(stub,  function, args)
-	} else if function == "registerHappening" {
+	} else if function == "dividend" {
 		// enter an an character event happening in the show.  pays out to users holding squares
 		fmt.Printf("Function is ask")
-		return t.registerHappening(stub, args)
+		return t.dividend(stub, args)
 	} else if function == "exchange" {
 		// matches trades and excecutes any matches
 		fmt.Printf("Function is exchange")
@@ -242,16 +244,16 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 	// Handle different functions
 	if function == "holdings" {
 		// query a users holdings
-	//	return t.holdings(stub, args)
-	
+		return t.holdings(stub, args)
 	} else if function == "cash" {
 		// query a users cash on hand
 		return t.cash(stub, args)
-	
-	} else if function == "market" {
-		// query a users total market value based on cash + market value of holdings
-	//	return t.market(stub, args)
-		
+	} else if function == "users" {
+		// query for list of users
+		return t.users(stub)
+	} else if function == "securities" {
+		// query for list of securities
+		return t.securities(stub)
 	} else {
 		fmt.Printf("Function is query")
 		return nil, errors.New("Invalid query function name. Expecting holdings, cash or market")
@@ -273,8 +275,72 @@ func main() {
 
 
 
+//********************************************************************************************************
+//****                        Query function inplimentations                                          ****
+//********************************************************************************************************
 
 
+func (t *SimpleChaincode) securities(stub *shim.ChaincodeStub) ([]byte, error) {
+	s := []string {"Jaime,Killed", "Jaime,Killer", "Jon,Killed", "Jon,Killer"}
+
+	sByteA, err := json.Marshal(s)
+	if err != nil {
+		return nil, err
+	}
+	
+	return sByteA, nil
+}
+
+
+func (t *SimpleChaincode) users(stub *shim.ChaincodeStub) ([]byte, error) {
+	u := []string {"David", "Aaron", "Wesley"}
+
+	uByteA, err := json.Marshal(u)
+	if err != nil {
+		return nil, err
+	}
+	
+	return uByteA, nil
+}
+
+func (t *SimpleChaincode) holdings(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+	fmt.Printf("Running holdings")
+	
+	userID := args[0]
+	var output []string
+	
+	numberUsersByteA, err := stub.GetState("Last" + userIndex)  //should be through data layer
+	if err != nil {
+		return nil, err
+	}
+	
+	numberUsers, err := strconv.Atoi(string(numberUsersByteA))
+	if err != nil {
+		return nil, err
+	}
+	
+	//finds the user's record for cash
+	//this is no good.  should have another hash to get the index of the user in the array or maybe store it in the trades?
+	for i := 1; i <= numberUsers; i++ {
+		userByteA, err := stub.GetState(userIndex + strconv.Itoa(i))
+		if err != nil {
+			return nil, err
+		}
+		
+		var user User
+		err = json.Unmarshal(userByteA, &user)
+		if err != nil {
+			return nil, err
+		}
+		
+		if user.UserID == userID {
+			output[0] = "cash: " + strconv.Itoa(user.Cash)
+		}
+	}
+	
+	return []byte(output[0]), nil
+	
+}
 
 func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	fmt.Printf("Running cash")
@@ -319,6 +385,11 @@ func (t *SimpleChaincode) cash(stub *shim.ChaincodeStub, args []string) ([]byte,
 }
 
 
+
+
+//********************************************************************************************************
+//****                        Invoke function inplimentations                                          ****
+//********************************************************************************************************
 
 
 
@@ -434,10 +505,10 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, structureName s
 
 
 // called by the moderator watson?  to specify that an event happened pay it out
-func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-	fmt.Printf("Running registerHappening")
+func (t *SimpleChaincode) dividend(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+	fmt.Printf("Running dividend")
 	
-	t.writeOut(stub, "in registerHappening")
+	t.writeOut(stub, "in dividend")
 	
 	var shareKey HappeningRegister
 	var numberUsers int
@@ -457,7 +528,7 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 		return nil, err
 	}
 	
-	t.writeOut(stub, "in registerHappening: before for loop")
+	t.writeOut(stub, "in dividend: before for loop")
 	//For each user
 	for i := 1; i <= numberUsers; i++ {
 		currentUserByteA, err := stub.GetState(userIndex + strconv.Itoa(i))
@@ -474,19 +545,14 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 			return nil, err
 		}
 		
-		t.writeOut(stub, "in registerHappening: sharesKeyByteA=" + string(shareKeyByteA))
 		numberSharesByteA, err := stub.GetState(string(shareKeyByteA))
 		numberShares, err := strconv.Atoi(string(numberSharesByteA))
 		
-		t.writeOut(stub, "in registerHappening: before big if_" + string(numberSharesByteA))
 		
 		if err == nil {  //means the user has stock in this security
-			t.writeOut(stub, "in registerHappening: after big if")
-			
 			if currentUser.Status == "Active" && numberShares > 0 {
-				t.writeOut(stub, "in registerHappening: in middle if: " + currentUser.UserID)
 				
-				currentUser.Cash = currentUser.Cash + payout				//todo:  should be transfer of funds not "creating money".  
+				currentUser.Cash = currentUser.Cash + payout		//todo:  should be transfer of funds not "creating money".  
 				
 				currentUserByteA,err := json.Marshal(currentUser)
 				if err != nil {
@@ -498,7 +564,7 @@ func (t *SimpleChaincode) registerHappening(stub *shim.ChaincodeStub, args []str
 		}	
 	}
 	
-	t.writeOut(stub, "in registerHappening: before return")
+	t.writeOut(stub, "in dividend: before return")
 	return nil,nil
 }
 
