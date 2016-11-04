@@ -256,7 +256,7 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 		return t.securities(stub)
 	} else {
 		fmt.Printf("Function is query")
-		return nil, errors.New("Invalid query function name. Expecting holdings, cash or market")
+		return nil, errors.New("Invalid query function name. Expecting holdings, cash, users or securities")
 	}	
 	
 	return nil, nil
