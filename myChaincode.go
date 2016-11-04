@@ -307,7 +307,7 @@ func (t *SimpleChaincode) holdings(stub *shim.ChaincodeStub, args []string) ([]b
 	fmt.Printf("Running holdings")
 	
 	userID := args[0]
-	var output []string
+	var output string
 	
 	numberUsersByteA, err := stub.GetState("Last" + userIndex)  //should be through data layer
 	if err != nil {
@@ -334,11 +334,11 @@ func (t *SimpleChaincode) holdings(stub *shim.ChaincodeStub, args []string) ([]b
 		}
 		
 		if user.UserID == userID {
-			output[0] = "cash: " + strconv.Itoa(user.Cash)
+			output = "cash: " + strconv.Itoa(user.Cash)
 		}
 	}
 	
-	return []byte(output[0]), nil
+	return []byte(output), nil
 	
 }
 
