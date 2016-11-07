@@ -40,6 +40,7 @@ import (
 
 // SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
+	userRep UserRepository 
 }
 
 
@@ -48,17 +49,23 @@ type SimpleChaincode struct {
 //********************************************************************************************************
 
 
+
+
 //Init the blockchain.  populate a 2x2 grid of potential events for users to buy
 func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Printf("Init called, initializing chaincode")
 	
 	t.writeOut(stub, "in init")
+
+	t.userRep.Init(stub)
 	
 	//create a bank with some money
 	var user User
 	user.UserID = "BANK"
 	user.Status = "Active"
 	user.Ballance = 1000
+	
+	t.userRep.NewUser("BANK")
 	
 	u, err := json.Marshal(user)
 	if err != nil {
@@ -110,10 +117,13 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
+	t.userRep.NewUser("Aaron")
 	_, err = t.registerUser(stub, "Aaron")
 	if err != nil {
 		return nil, err
 	}
+	
+	
 	
 	//register some trades
 	b := []string{"Jaime,Killed", strconv.Itoa(defaultPrice), "100", "", "Aaron"}

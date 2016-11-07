@@ -61,7 +61,7 @@ type Trade struct {
 
 
 type Holdings struct {
-	SecurityID		string	`json:"securityid"`
+	SecurityID	string	`json:"securityid"`
 	UserID		string	`json:"userid"`
 }
 

@@ -6,7 +6,7 @@ import (
 //	"fmt"
 //	"strconv"
 //	"encoding/json"
-//	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
 
@@ -14,37 +14,40 @@ import (
 //         User Repository
 //********************************
 
-type UserRepo struct {
-	sc *SimpleChaincode
+type UserRepository struct {
+	stub *shim.ChaincodeStub
 	tempUser User
 }
 
-func (self *UserRepo) Init(sc *SimpleChaincode) bool {
-	self.sc = sc
+func (self *UserRepository) Init(stub *shim.ChaincodeStub) bool {
+	self.stub = stub
 	return true
 }
 
 
-func (self *UserRepo) RegisterUser(user User) bool {
-	self.tempUser = user
+func (self *UserRepository) NewUser(userID string) bool {
+	self.tempUser.UserID = userID
+	self.tempUser.Status = "Active"
+	self.tempUser.Ballance = initialCash
+
 	return true
 }
 
-func (self *UserRepo) GetUser(userId int) User {
+func (self *UserRepository) GetUser(userId int) User {
 	return self.tempUser
 }
 
-func (self *UserRepo) UpdateUser(userId int, user User) bool {
+func (self *UserRepository) UpdateUser(userId int, user User) bool {
 	self.tempUser = user
 	return true
 }
 
-func (self *UserRepo) DeleteUser(userId int) bool {
+func (self *UserRepository) DeleteUser(userId int) bool {
 	//self.tempUser = nil
 	return true
 }
 
-func (self *UserRepo) GetUserList() []User {
+func (self *UserRepository) GetUserList() []User {
 	ul := []User {self.tempUser}
 	
 	return ul
