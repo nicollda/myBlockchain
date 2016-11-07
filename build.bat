@@ -4,7 +4,9 @@ cd c:\gogit
 :build
 cls
 ECHO Building.....
-go build myChaincodeAPI.go myChaincodeBL.go
+go build ./
+
+echo myChaincodeAPI.go myChaincodeBL.go
 
 
 IF NOT ERRORLEVEL 1 (
