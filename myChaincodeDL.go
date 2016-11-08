@@ -11,6 +11,51 @@ import (
 
 
 //********************************
+//         Trade Repository
+//********************************
+
+type TradeRepository struct {
+	chainArray ChainArray
+}
+
+func (self *TradeRepository) init(stub *shim.ChaincodeStub) bool {
+	self.chainArray.init(stub, tradeIndex)
+	
+	return true
+}
+
+func (self *TradeRepository) newTrade(trade Trade) (int, error) {    //new trade returns "trade" or takes trade???
+	index, err := self.chainArray.appendValue(trade)
+	if err != nil {
+		return -1, err
+	}
+	return index, nil
+}
+
+func (self *TradeRepository) getTradeByPostion(index int) (Trade, error) {
+	var trade Trade
+	
+	err := self.chainArray.get(index, &trade)
+	if err != nil {
+		return trade, err
+	}
+	
+	return trade, nil
+}
+
+
+func (self *TradeRepository) updateTrade(index int, trade Trade) (string, error) {
+	key, err := self.chainArray.put(index, trade)
+	if err != nil {
+		return "", err
+	}
+	
+	return key, nil
+}
+
+
+
+//********************************
 //         User Repository
 //********************************
 
