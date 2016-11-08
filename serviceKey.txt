@@ -1,1 +1,1 @@
-{"jsonrpc":"2.0","result":{"status":"OK","message":"543265746bc0c36c7910f20564e75cac9f89816d22d1d39a4225beeb0af47d68846e9440fbdfb638c33953b9c01fba0832b92b6ceb69a0e42f212b53f4a958b7"},"id":1}
+{"jsonrpc":"2.0","error":{"code":-32001,"message":"Deployment failure","data":"Error when deploying chaincode: Error getting chaincode package bytes: Error getting code 'go get' failed with error: 'exit status 2'\n# github.com/nicollda/myBlockchain\n/go/_usercode_/090945923/src/github.com/nicollda/myBlockchain/myChaincodeDL.go:18: undefined: HashMap\n"},"id":1}

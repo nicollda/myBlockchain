@@ -16,11 +16,10 @@ import (
 
 type UserRepository struct {
 	hashmap HashMap
-	user User
 }
 
 func (self *UserRepository) Init(stub *shim.ChaincodeStub) bool {
-	self.hashmap.Init(stub, userIndex, &self.user)
+	self.hashmap.Init(stub, userIndex)
 	return true
 }
 
