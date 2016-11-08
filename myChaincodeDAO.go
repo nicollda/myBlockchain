@@ -26,13 +26,13 @@ type LinkedListNode struct {
 	Payload []byte	`json:"payload"`
 }
 
-type LinkedList struct {
+type ChainLinkedList struct {
 	stub *shim.ChaincodeStub
 	mapName string
 	originKey string
 }
 
-func (self *LinkedList) init(stub *shim.ChaincodeStub, mapName string) bool {
+func (self *ChainLinkedList) init(stub *shim.ChaincodeStub, mapName string) bool {
 	self.stub = stub
 	self.mapName = mapName
 	self.originKey = ""
@@ -41,13 +41,13 @@ func (self *LinkedList) init(stub *shim.ChaincodeStub, mapName string) bool {
 }
 
 
-func (self *LinkedList) getKey(key string) string {
+func (self *ChainLinkedList) getKey(key string) string {
 	return self.mapName + key
 }
 
 
 
-func (self *LinkedList) get(key string, returnVal interface{}) error {
+func (self *ChainLinkedList) get(key string, returnVal interface{}) error {
 	lByteA, err := self.stub.GetState(self.getKey(key))
 	if err != nil {
 		return err
@@ -70,7 +70,7 @@ func (self *LinkedList) get(key string, returnVal interface{}) error {
 
 
 
-func (self *LinkedList) put(key string, val interface{}) (string, error) {
+func (self *ChainLinkedList) put(key string, val interface{}) (string, error) {
 	var newNode LinkedListNode
 	
 	
@@ -111,7 +111,7 @@ func (self *LinkedList) put(key string, val interface{}) (string, error) {
 	return mKey, nil
 }
 
-func (self *LinkedList) del(key string) error {
+func (self *ChainLinkedList) del(key string) error {
 	mKey := self.getKey(key)
 	
 	//Does the data already have a node?
@@ -177,8 +177,6 @@ func (self *LinkedList) del(key string) error {
 //***** ChainArray (cannot call it array)
 //********************************************************************************
 
-//LinkedList does not have the ability to iterate through the list
-//returns []byte array.  maybe should have a mapType = "[]String" etc... ?
 type ChainArray struct {
 	stub *shim.ChaincodeStub
 	ArrayName string

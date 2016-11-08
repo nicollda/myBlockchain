@@ -91,7 +91,7 @@ func (self *Trade) init(userID string, securityID string, securityPointer string
 //********************************
 
 type UserRepository struct {
-	LinkedList LinkedList
+	LinkedList ChainLinkedList
 }
 
 func (self *UserRepository) init(stub *shim.ChaincodeStub) bool {
