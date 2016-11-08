@@ -57,7 +57,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	
 	t.writeOut(stub, "in init")
 
-	t.userRep.Init(stub)
+	t.userRep.init(stub)
 	
 	//create a bank with some money
 	var user User
@@ -65,13 +65,13 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	user.Status = "Active"
 	user.Ballance = 1000
 	
-	t.userRep.NewUser(user.UserID, user.Ballance)
+	t.userRep.newUser(user.UserID, user.Ballance)
 	
 	user.Ballance = 2000
 	
-	t.userRep.UpdateUser(user.UserID, user)
+	t.userRep.updateUser(user.UserID, user)
 	
-	user2, err := t.userRep.GetUser(user.UserID)
+	user2, err := t.userRep.getUser(user.UserID)
 	
 	t.writeOut(stub, "New Ballance: " + strconv.Itoa(user2.Ballance))
 	
@@ -125,7 +125,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
-	t.userRep.NewUser("Aaron", 1000)
+	t.userRep.newUser("Aaron", 1000)
 	_, err = t.registerUser(stub, "Aaron")
 	if err != nil {
 		return nil, err

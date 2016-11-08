@@ -18,18 +18,16 @@ type UserRepository struct {
 	hashmap HashMap
 }
 
-func (self *UserRepository) Init(stub *shim.ChaincodeStub) bool {
-	self.hashmap.Init(stub, userIndex)
+func (self *UserRepository) init(stub *shim.ChaincodeStub) bool {
+	self.hashmap.init(stub, userIndex)
 	return true
 }
 
 
-func (self *UserRepository) NewUser(userID string, ballance int) (string,error) {
-	var user User
+func (self *UserRepository) newUser(userID string, ballance int) (string,error) {
 	
-	user.UserID = userID
-	user.Status = "Active"
-	user.Ballance = ballance
+	var user User
+	user.init(userID, ballance)
 	
 	key, err := self.hashmap.put(userID, user)
 	if err != nil {
@@ -39,7 +37,7 @@ func (self *UserRepository) NewUser(userID string, ballance int) (string,error) 
 	return key, nil
 }
 
-func (self *UserRepository) GetUser(userId string) (User, error) {
+func (self *UserRepository) getUser(userId string) (User, error) {
 	var user User
 	
 	err := self.hashmap.get(userId, &user)
@@ -50,7 +48,7 @@ func (self *UserRepository) GetUser(userId string) (User, error) {
 	return user, nil
 }
 
-func (self *UserRepository) UpdateUser(userID string, user User) (string, error) {
+func (self *UserRepository) updateUser(userID string, user User) (string, error) {
 	key, err := self.hashmap.put(userID, user)
 	if err != nil {
 		return "", err
@@ -59,11 +57,30 @@ func (self *UserRepository) UpdateUser(userID string, user User) (string, error)
 	return key, nil
 }
 
-func (self *UserRepository) DeleteUser(userID string) error {
+func (self *UserRepository) deleteUser(userID string) error {
 	err :=  self.hashmap.del(userID)
 	if err != nil {
 		return err
 	}
 	
 	return nil
+}
+
+
+//********************************
+//         User
+//********************************
+
+type User struct {
+	UserID		string	`json:"userID"`
+	Status		string	`json:"status"`
+	Ballance	int		`json:"ballance"`
+}
+
+func (self *User) init(userID string, ballance int) bool {
+	self.UserID = userID
+	self.Status = "Active"
+	self.Ballance = ballance
+	
+	return true
 }

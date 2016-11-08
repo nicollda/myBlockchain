@@ -65,12 +65,6 @@ type Holdings struct {
 	UserID		string	`json:"userid"`
 }
 
-type User struct {
-	UserID		string	`json:"userID"`
-	Status		string	`json:"status"`
-	Ballance	int		`json:"ballance"`
-}
-
 
 
 //********************************************************************************************************

@@ -22,7 +22,7 @@ type HashMap struct {
 	mapName string
 }
 
-func (self *HashMap) Init(stub *shim.ChaincodeStub, mapName string) bool {
+func (self *HashMap) init(stub *shim.ChaincodeStub, mapName string) bool {
 	self.stub = stub
 	self.mapName = mapName
 	
