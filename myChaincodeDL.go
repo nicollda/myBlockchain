@@ -60,7 +60,7 @@ func (self *UserRepository) UpdateUser(userID string, user User) (string, error)
 }
 
 func (self *UserRepository) DeleteUser(userID string) error {
-	err := self.hashmap.del(userID)
+	err :=  self.hashmap.del(userID)
 	if err != nil {
 		return err
 	}
