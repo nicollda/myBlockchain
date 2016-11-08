@@ -18,37 +18,49 @@ import (
 
 
 //********************************************************************************
-//***** HashMap
+//***** LinkedList
 //********************************************************************************
-
-//Hashmap does not have the ability to iterate through the list
-//returns []byte array.  maybe should have a mapType = "[]String" etc... ?
-type HashMap struct {
-	stub *shim.ChaincodeStub
-	mapName string
+//wraps the payload (struct we want to save) in a new struct that acts as a linked list
+type LinkedListNode struct {
+	NextNode string	`json:"nextnode"`
+	Payload []byte	`json:"payload"`
 }
 
-func (self *HashMap) init(stub *shim.ChaincodeStub, mapName string) bool {
+type LinkedList struct {
+	stub *shim.ChaincodeStub
+	mapName string
+	originKey string
+}
+
+func (self *LinkedList) init(stub *shim.ChaincodeStub, mapName string) bool {
 	self.stub = stub
 	self.mapName = mapName
+	self.originKey = ""
 	
 	return true
 }
 
 
-func (self *HashMap) getKey(key string) string {
+func (self *LinkedList) getKey(key string) string {
 	return self.mapName + key
 }
 
 
 
-func (self *HashMap) get(key string, returnVal interface{}) error {
-	mByteA, err := self.stub.GetState(self.getKey(key))
+func (self *LinkedList) get(key string, returnVal interface{}) error {
+	lByteA, err := self.stub.GetState(self.getKey(key))
 	if err != nil {
 		return err
 	}
 	
-	err = json.Unmarshal(mByteA, &returnVal)
+	var llNode LinkedListNode
+	err = json.Unmarshal(lByteA, &llNode)
+	if err != nil {
+		return err
+	}
+	
+	
+	err = json.Unmarshal(llNode.Payload, &returnVal)
 	if err != nil {
 		return err
 	}
@@ -58,14 +70,40 @@ func (self *HashMap) get(key string, returnVal interface{}) error {
 
 
 
-func (self *HashMap) put(key string, val interface{}) (string, error) {
+func (self *LinkedList) put(key string, val interface{}) (string, error) {
+	var newNode LinkedListNode
+	
+	
 	mKey := self.getKey(key)
-	mByteA, err := json.Marshal(&val)
+	
+	mByteA, err := json.Marshal(val)
+	if err != nil {
+		return "", err
+	}
+	newNode.Payload = mByteA
+		
+	//Does the data already have a node?
+	existingNodeByteA, err := self.stub.GetState(mKey)
 	if err != nil {
 		return "", err
 	}
 	
-	err = self.stub.PutState(mKey, mByteA)
+
+	if existingNodeByteA == nil {
+		//No, the data does is not already persisted
+		if self.originKey != "" {					//is our list empty? 
+			newNode.NextNode = self.originKey
+		}
+		
+		self.originKey = mKey
+	}
+	
+	newNodeByteA, err := json.Marshal(newNode) 
+	if err != nil {
+		return "", err
+	}
+	
+	err = self.stub.PutState(mKey, newNodeByteA)
 	if err != nil {
 		return "", err
 	}
@@ -73,9 +111,61 @@ func (self *HashMap) put(key string, val interface{}) (string, error) {
 	return mKey, nil
 }
 
-func (self *HashMap) del(key string) error {
-	err := self.stub.DelState(self.getKey(key))
+func (self *LinkedList) del(key string) error {
+	mKey := self.getKey(key)
+	
+	//Does the data already have a node?
+	existingNodeByteA, err := self.stub.GetState(mKey)
 	if err != nil {
+		return err
+	}
+	
+	//Need to get the pointer from our deleted node so we can set its next door neighbour's pointer
+	var existingNode LinkedListNode
+	err = json.Unmarshal(existingNodeByteA, &existingNode)  //we can now retrieve the pointer we are about to delete
+	if err != nil {
+		return err
+	}
+	
+	
+	//Need to walk down the list until we find a node that points to the node that needs to be deleted
+	for nextPointer := self.originKey; nextPointer != "";  {
+		var llNode LinkedListNode
+		llNodeByteA, err := self.stub.GetState(nextPointer)
+		if err != nil {
+			return err
+		}
+		
+		err = json.Unmarshal(llNodeByteA, &llNode) 
+		if err != nil {
+			return err
+		}
+		
+		if llNode.NextNode == mKey {
+			//we found the node pointing to our deletion candidate.
+			//edit its pointer and save it back
+			llNode.NextNode = existingNode.NextNode
+			
+			llNodeByteA, err = json.Marshal(llNode)
+			if err != nil {
+				return err
+			}
+			
+			//Save back our change
+			err = self.stub.PutState(nextPointer, llNodeByteA)
+			if err != nil {
+				return err
+			}
+			nextPointer = ""  //ditch out of our for loop
+		} else {
+			nextPointer = llNode.NextNode
+		}
+	}
+	
+	//we have updated the links now we can just delete the node
+	err = self.stub.DelState(self.getKey(key))
+	if err != nil {
+		//at this point if this fails it won't be in the linked list but it will still exist.  not good
 		return err
 	}
 	
@@ -87,7 +177,7 @@ func (self *HashMap) del(key string) error {
 //***** ChainArray (cannot call it array)
 //********************************************************************************
 
-//Hashmap does not have the ability to iterate through the list
+//LinkedList does not have the ability to iterate through the list
 //returns []byte array.  maybe should have a mapType = "[]String" etc... ?
 type ChainArray struct {
 	stub *shim.ChaincodeStub

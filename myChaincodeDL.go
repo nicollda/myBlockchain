@@ -60,8 +60,8 @@ func (self *TradeRepository) updateTrade(index int, trade Trade) (string, error)
 
 type Trade struct {
 	UserID		string	`json:"userid"`
-	UserPointer	string	`json:"userpointer"`
 	SecurityID	string	`json:"securityid"`
+	SecurityPointer	string	`json:"securitypointer"`
 	TransType	string	`json:"transtype"`
 	Price		float64	`json:"price"`
 	Units		int		`json:"units"`
@@ -70,10 +70,10 @@ type Trade struct {
 	Fulfilled	int		`json:"fulfilled"`
 }
 
-func (self *Trade) init(userID string, userPointer string, securityID string, transType string, price float64, units int, expiry string) bool {
+func (self *Trade) init(userID string, securityID string, securityPointer string, transType string, price float64, units int, expiry string) bool {
 	self.UserID = userID
-	self.UserPointer = userPointer
 	self.SecurityID = securityID
+	self.SecurityPointer = securityPointer
 	self.TransType = transType
 	self.Price = price
 	self.Units = units
@@ -91,11 +91,11 @@ func (self *Trade) init(userID string, userPointer string, securityID string, tr
 //********************************
 
 type UserRepository struct {
-	hashmap HashMap
+	LinkedList LinkedList
 }
 
 func (self *UserRepository) init(stub *shim.ChaincodeStub) bool {
-	self.hashmap.init(stub, userIndex)
+	self.LinkedList.init(stub, userIndex)
 	return true
 }
 
@@ -105,7 +105,7 @@ func (self *UserRepository) newUser(userID string, ballance int) (string,error) 
 	var user User
 	user.init(userID, ballance)
 	
-	key, err := self.hashmap.put(userID, user)
+	key, err := self.LinkedList.put(userID, user)
 	if err != nil {
 		return "", err
 	}
@@ -116,7 +116,7 @@ func (self *UserRepository) newUser(userID string, ballance int) (string,error) 
 func (self *UserRepository) getUser(userId string) (User, error) {
 	var user User
 	
-	err := self.hashmap.get(userId, &user)
+	err := self.LinkedList.get(userId, &user)
 	if err != nil {
 		return user, err
 	}
@@ -125,7 +125,7 @@ func (self *UserRepository) getUser(userId string) (User, error) {
 }
 
 func (self *UserRepository) updateUser(userID string, user User) (string, error) {
-	key, err := self.hashmap.put(userID, user)
+	key, err := self.LinkedList.put(userID, user)
 	if err != nil {
 		return "", err
 	}
@@ -134,7 +134,7 @@ func (self *UserRepository) updateUser(userID string, user User) (string, error)
 }
 
 func (self *UserRepository) deleteUser(userID string) error {
-	err :=  self.hashmap.del(userID)
+	err :=  self.LinkedList.del(userID)
 	if err != nil {
 		return err
 	}
