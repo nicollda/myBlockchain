@@ -54,6 +54,37 @@ func (self *TradeRepository) updateTrade(index int, trade Trade) (string, error)
 }
 
 
+//********************************
+//         Trade
+//********************************
+
+type Trade struct {
+	UserID		string	`json:"userid"`
+	UserPointer	string	`json:"userpointer"`
+	SecurityID	string	`json:"securityid"`
+	TransType	string	`json:"transtype"`
+	Price		float64	`json:"price"`
+	Units		int		`json:"units"`
+	Status		string	`json:"status"`
+	Expiry		string	`json:"expiry"`
+	Fulfilled	int		`json:"fulfilled"`
+}
+
+func (self *Trade) init(userID string, userPointer string, securityID string, transType string, price float64, units int, expiry string) bool {
+	self.UserID = userID
+	self.UserPointer = userPointer
+	self.SecurityID = securityID
+	self.TransType = transType
+	self.Price = price
+	self.Units = units
+	self.Status = "Active"
+	self.Expiry = expiry
+	self.Fulfilled = 0
+	
+	return true
+}
+
+
 
 //********************************
 //         User Repository

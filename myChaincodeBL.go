@@ -48,17 +48,6 @@ const debug =			true
 
 
 
-type Trade struct {
-	UserID		string	`json:"userid"`
-	SecurityID	string	`json:"securityid"`
-	TransType	string	`json:"transtype"`
-	Price		float64	`json:"price"`
-	Units		int		`json:"units"`
-	Status		string	`json:"status"`
-	Expiry		string	`json:"expiry"`
-	Fulfilled	int		`json:"fulfilled"`
-}
-
 
 type Holdings struct {
 	SecurityID	string	`json:"securityid"`
