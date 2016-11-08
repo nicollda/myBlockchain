@@ -15,40 +15,45 @@ import (
 //********************************
 
 type UserRepository struct {
-	stub *shim.ChaincodeStub
-	tempUser User
+	hashmap HashMap
+	user User
 }
 
 func (self *UserRepository) Init(stub *shim.ChaincodeStub) bool {
-	self.stub = stub
+	self.hashmap.Init(stub, userIndex, &self.user)
 	return true
 }
 
 
-func (self *UserRepository) NewUser(userID string) bool {
-	self.tempUser.UserID = userID
-	self.tempUser.Status = "Active"
-	self.tempUser.Ballance = initialCash
-
-	return true
-}
-
-func (self *UserRepository) GetUser(userId int) User {
-	return self.tempUser
-}
-
-func (self *UserRepository) UpdateUser(userId int, user User) bool {
-	self.tempUser = user
-	return true
-}
-
-func (self *UserRepository) DeleteUser(userId int) bool {
-	//self.tempUser = nil
-	return true
-}
-
-func (self *UserRepository) GetUserList() []User {
-	ul := []User {self.tempUser}
+func (self *UserRepository) NewUser(userID string, ballance int) bool {
+	var user User
 	
-	return ul
+	user.UserID = userID
+	user.Status = "Active"
+	user.Ballance = ballance
+	
+	self.hashmap.put(userID, user)
+
+	return true
+}
+
+func (self *UserRepository) GetUser(userId string) (User, error) {
+	var user User
+	err := self.hashmap.get(userId, user)
+	if err != nil {
+		return user, err
+	}
+	
+	return user, nil
+}
+
+func (self *UserRepository) UpdateUser(userID string, user User) bool {
+	self.hashmap.put(userID, user)
+	return true
+}
+
+func (self *UserRepository) DeleteUser(userID string) bool {
+	//self.tempUser = nil
+	self.hashmap.del(userID)
+	return true
 }

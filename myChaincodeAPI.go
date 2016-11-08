@@ -65,7 +65,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	user.Status = "Active"
 	user.Ballance = 1000
 	
-	t.userRep.NewUser("BANK")
+	t.userRep.NewUser(user.UserID, user.Ballance)
 	
 	u, err := json.Marshal(user)
 	if err != nil {
@@ -117,7 +117,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
-	t.userRep.NewUser("Aaron")
+	t.userRep.NewUser("Aaron", 1000)
 	_, err = t.registerUser(stub, "Aaron")
 	if err != nil {
 		return nil, err
