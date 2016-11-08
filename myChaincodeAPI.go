@@ -67,6 +67,14 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	
 	t.userRep.NewUser(user.UserID, user.Ballance)
 	
+	user.Ballance = 2000
+	
+	t.userRep.UpdateUser(user.UserID, user)
+	
+	user2, err := t.userRep.GetUser(user.UserID)
+	
+	t.writeOut(stub, "New Ballance: " + strconv.Itoa(user2.Ballance))
+	
 	u, err := json.Marshal(user)
 	if err != nil {
 		
