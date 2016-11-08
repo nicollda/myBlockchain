@@ -24,21 +24,25 @@ func (self *UserRepository) Init(stub *shim.ChaincodeStub) bool {
 }
 
 
-func (self *UserRepository) NewUser(userID string, ballance int) bool {
+func (self *UserRepository) NewUser(userID string, ballance int) (string,error) {
 	var user User
 	
 	user.UserID = userID
 	user.Status = "Active"
 	user.Ballance = ballance
 	
-	self.hashmap.put(userID, user)
-
-	return true
+	key, err := self.hashmap.put(userID, user)
+	if err != nil {
+		return "", err
+	}
+	
+	return key, nil
 }
 
 func (self *UserRepository) GetUser(userId string) (User, error) {
 	var user User
-	err := self.hashmap.get(userId, user)
+	
+	err := self.hashmap.get(userId, &user)
 	if err != nil {
 		return user, err
 	}
@@ -46,13 +50,20 @@ func (self *UserRepository) GetUser(userId string) (User, error) {
 	return user, nil
 }
 
-func (self *UserRepository) UpdateUser(userID string, user User) bool {
-	self.hashmap.put(userID, user)
-	return true
+func (self *UserRepository) UpdateUser(userID string, user User) (string, error) {
+	key, err := self.hashmap.put(userID, user)
+	if err != nil {
+		return "", err
+	}
+	
+	return key, nil
 }
 
-func (self *UserRepository) DeleteUser(userID string) bool {
-	//self.tempUser = nil
-	self.hashmap.del(userID)
-	return true
+func (self *UserRepository) DeleteUser(userID string) error {
+	err := self.hashmap.del(userID)
+	if err != nil {
+		return err
+	}
+	
+	return nil
 }
