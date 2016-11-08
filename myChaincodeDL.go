@@ -10,6 +10,73 @@ import (
 )
 
 
+
+//********************************
+//         Security Repository
+//********************************
+
+type SecurityRepository struct {
+	chainArray ChainArray
+}
+
+func (self *SecurityRepository) init(stub *shim.ChaincodeStub) bool {
+	self.chainArray.init(stub, securityIndex)
+	
+	return true
+}
+
+func (self *SecurityRepository) newSecurity(security Security) (int, error) {    //new trade returns "trade" or takes trade???
+	index, err := self.chainArray.appendValue(security)
+	if err != nil {
+		return -1, err
+	}
+	return index, nil
+}
+
+func (self *SecurityRepository) getSecurityByPostion(index int) (Security, error) {
+	var security Security
+	
+	err := self.chainArray.get(index, &security)
+	if err != nil {
+		return security, err
+	}
+	
+	return security, nil
+}
+
+
+func (self *SecurityRepository) updateSecurity(index int, security Security) (string, error) {
+	key, err := self.chainArray.put(index, security)
+	if err != nil {
+		return "", err
+	}
+	
+	return key, nil
+}
+
+
+//********************************
+//         Security
+//********************************
+
+type Security struct {
+	SecurityID		string	`json:"securityid"`
+	Description		string	`json:"description"`
+	Status			string	`json:"status"`
+}
+
+
+func (self *Security) init(securityID string, description string) bool {
+	self.SecurityID = securityID
+	self.Description = description
+	self.Status = "Active"
+	
+	return true
+}
+
+
+
+
 //********************************
 //         Trade Repository
 //********************************
@@ -59,15 +126,15 @@ func (self *TradeRepository) updateTrade(index int, trade Trade) (string, error)
 //********************************
 
 type Trade struct {
-	UserID		string	`json:"userid"`
-	SecurityID	string	`json:"securityid"`
+	UserID			string	`json:"userid"`
+	SecurityID		string	`json:"securityid"`
 	SecurityPointer	string	`json:"securitypointer"`
-	TransType	string	`json:"transtype"`
-	Price		float64	`json:"price"`
-	Units		int		`json:"units"`
-	Status		string	`json:"status"`
-	Expiry		string	`json:"expiry"`
-	Fulfilled	int		`json:"fulfilled"`
+	TransType		string	`json:"transtype"`
+	Price			float64	`json:"price"`
+	Units			int		`json:"units"`
+	Status			string	`json:"status"`
+	Expiry			string	`json:"expiry"`
+	Fulfilled		int		`json:"fulfilled"`
 }
 
 func (self *Trade) init(userID string, securityID string, securityPointer string, transType string, price float64, units int, expiry string) bool {

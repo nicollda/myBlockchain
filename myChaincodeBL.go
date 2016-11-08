@@ -39,6 +39,7 @@ import (
 const separator = 		"::::"
 const userIndex =		"UserIndex" + separator
 const tradeIndex =		"TradeIndex" + separator
+const securityIndex = 	"SecurityIndex" + separator
 const holdingIndex =	"HoldingIndex" + separator
 const initialCash =		1000
 const payout =			5
