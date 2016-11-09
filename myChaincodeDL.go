@@ -12,6 +12,113 @@ import (
 
 
 //********************************
+//         Holdings Repository
+//********************************
+type HoldingsRepository struct {
+	LinkedList ChainLinkedList
+}
+
+func (self *HoldingsRepository) init(stub *shim.ChaincodeStub) bool {
+	self.LinkedList.init(stub, holdingIndex)
+	
+	return true
+}
+
+
+func (self *HoldingsRepository) getHoldingID(userID string, securityID string) string {
+	return userID + securityID
+}
+
+
+
+
+func (self *HoldingsRepository) newHolding(userID string, securityID string, units int) (string,error) {
+	
+	var holding Holding
+	holding.init(userID, securityID, units)
+	
+	key, err := self.LinkedList.put(self.getHoldingID(userID, securityID), holding)
+	if err != nil {
+		return "", err
+	}
+	
+	return key, nil
+}
+
+func (self *HoldingsRepository) getHolding(userID string, securityID string,) (Holding, error) {
+	var holding Holding
+	
+	err := self.LinkedList.get(self.getHoldingID(userID, securityID), &holding)
+	if err != nil {
+		return holding, err
+	}
+	
+	return holding, nil
+}
+
+func (self *HoldingsRepository) updateHolding(userID string, securityID string, holding Holding) (string, error) {
+	key, err := self.LinkedList.put(self.getHoldingID(userID, securityID), holding)
+	if err != nil {
+		return "", err
+	}
+	
+	return key, nil
+}
+
+func (self *HoldingsRepository) deleteHolding(userID string, securityID string,) error {
+	err := self.LinkedList.del(self.getHoldingID(userID, securityID))
+	if err != nil {
+		return err
+	}
+	
+	return nil
+}
+
+
+
+
+
+//********************************
+//         Holding
+//********************************
+type Holding struct {
+	SecurityID	string	`json:"securityid"`
+	UserID		string	`json:"userid"`
+	Units		int		`json:"units"`
+}
+
+func (self *Holding) init(userID string, securityID string, units int) bool {
+	self.UserID = userID
+	self.SecurityID = securityID
+	self.Units = units
+	
+	return true
+}
+
+
+
+func (self *Holding) updateUnits(units int) bool {
+	self.Units = units
+	
+	return true
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//********************************
 //         Security Repository
 //********************************
 

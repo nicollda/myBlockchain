@@ -50,12 +50,6 @@ const debug =			true
 
 
 
-type Holdings struct {
-	SecurityID	string	`json:"securityid"`
-	UserID		string	`json:"userid"`
-}
-
-
 
 //********************************************************************************************************
 //****                        Query function inplimentations                                          ****
@@ -133,7 +127,7 @@ func (t *SimpleChaincode) ballance(stub *shim.ChaincodeStub, args []string) ([]b
 		return nil, err
 	}
 	
-	var shareKey Holdings
+	var shareKey Holding
 	shareKey.UserID = "Aaron"
 	shareKey.SecurityID = "Jaime,Killed"
 
@@ -297,7 +291,7 @@ func (t *SimpleChaincode) dividend(stub *shim.ChaincodeStub, args []string) ([]b
 	
 	t.writeOut(stub, "in dividend")
 	
-	var shareKey Holdings
+	var shareKey Holding
 	var numberUsers int
 	var currentUser User
 	
@@ -562,7 +556,7 @@ func (t *SimpleChaincode) executeTrade(stub *shim.ChaincodeStub, buyTradeIndex i
 		return nil, err
 	}
 	
-	var shareKey Holdings
+	var shareKey Holding
 	shareKey.UserID = buyTrade.UserID
 	shareKey.SecurityID = buyTrade.SecurityID
 	
