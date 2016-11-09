@@ -45,10 +45,21 @@ func (self *HoldingsRepository) newHolding(userID string, securityID string, uni
 	return key, nil
 }
 
-func (self *HoldingsRepository) getHolding(userID string, securityID string,) (Holding, error) {
+func (self *HoldingsRepository) getHolding(userID string, securityID string) (Holding, error) {
 	var holding Holding
 	
-	err := self.LinkedList.get(self.getHoldingID(userID, securityID), &holding)
+	holding, err := self.getHoldingByID(self.getHoldingID(userID, securityID))
+	if err != nil {
+		return holding, err
+	}
+	
+	return holding, nil
+}
+
+func (self *HoldingsRepository) getHoldingByID(holdingID string) (Holding, error) {
+	var holding Holding
+	
+	err := self.LinkedList.get(holdingID, &holding)
 	if err != nil {
 		return holding, err
 	}
