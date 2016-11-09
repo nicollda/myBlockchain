@@ -17,11 +17,10 @@ under the License.
 
 
 
-//todo:  add constants for all string litterals
-//todo:  need to make consitent status.  need better way to take them out of the process when closed
-//todo: data abstraction layer, abstract persistance
-//todo: add security to get user names
 
+//todo:  need to make consitent status.  need better way to take them out of the process when closed
+//todo: add security to get user names
+//todo:  make user into account
 
 
 
@@ -65,10 +64,12 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	t.securitiesRep.init(stub)
 	t.tradeRep.init(stub)
 	
+	_, err := t.userRep.newUser("BANK", 100000)
+	user, err := t.userRep.getUser("BANK")
+	t.writeOut(stub, "ballance: " + strconv.Itoa(user.getBallance()))
 	
 	
 	//create a bank with some money
-	var user User
 	user.UserID = "BANK"
 	user.Status = "Active"
 	user.Ballance = 1000

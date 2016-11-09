@@ -345,3 +345,7 @@ func (self *User) init(userID string, ballance int) bool {
 	
 	return true
 }
+
+func (self *User) getBallance() int {
+	return self.Ballance
+}
