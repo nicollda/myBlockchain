@@ -44,7 +44,6 @@ const holdingIndex =	"HoldingIndex" + separator
 const initialCash =		1000
 const payout =			5
 const defaultPrice =	5
-const bankUser =		userIndex + "BANK"
 const debug =			true
 
 
@@ -289,7 +288,7 @@ func (t *SimpleChaincode) getNextIndex(stub *shim.ChaincodeStub, structureName s
 func (t *SimpleChaincode) dividend(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	fmt.Printf("Running dividend")
 	
-	t.writeOut(stub, "in dividend")
+	t.writeOut("in dividend")
 	
 	var shareKey Holding
 	var numberUsers int
@@ -309,7 +308,7 @@ func (t *SimpleChaincode) dividend(stub *shim.ChaincodeStub, args []string) ([]b
 		return nil, err
 	}
 	
-	t.writeOut(stub, "in dividend: before for loop")
+	t.writeOut("in dividend: before for loop")
 	//For each user
 	for i := 1; i <= numberUsers; i++ {
 		currentUserByteA, err := stub.GetState(userIndex + strconv.Itoa(i))
@@ -345,16 +344,16 @@ func (t *SimpleChaincode) dividend(stub *shim.ChaincodeStub, args []string) ([]b
 		}	
 	}
 	
-	t.writeOut(stub, "in dividend: before return")
+	t.writeOut("in dividend: before return")
 	return nil,nil
 }
 
 
-func (t *SimpleChaincode) writeOut(stub *shim.ChaincodeStub, out string) ([]byte, error) {
+func (t *SimpleChaincode) writeOut(out string) ([]byte, error) {
 	if debug {
-		curOutByteA,err := stub.GetState("currentOutput")		
+		curOutByteA,err := t.stub.GetState("currentOutput")		
 		outByteA := []byte(string(curOutByteA) + ":::" + out)
-		err = stub.PutState("currentOutput", outByteA)
+		err = t.stub.PutState("currentOutput", outByteA)
 		return nil, err
 	}
 	
@@ -373,7 +372,7 @@ func (t *SimpleChaincode) writeOut(stub *shim.ChaincodeStub, out string) ([]byte
 func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
 	fmt.Printf("Running exchange")
 	
-	t.writeOut(stub, "in exchange")
+	t.writeOut("in exchange")
 	
 	var buyTrade	Trade
 	var sellTrade	Trade
@@ -389,7 +388,7 @@ func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
 	}
 	
 	
-	t.writeOut(stub, "in exchange: before matching loop")
+	t.writeOut("in exchange: before matching loop")
 	//trade matching loop
 	for b := 1; b <= numberTrades; b++{
 		bTradeByteA, err := stub.GetState(tradeIndex + strconv.Itoa(b))
@@ -414,9 +413,9 @@ func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
 			}
 			
 			
-			//t.writeOut(stub, sellTrade.Status + " " + ")
+			//t.writeOut(sellTrade.Status + " " + ")
 			if sellTrade.Status == "Open" && buyTrade.Status == "Open" && sellTrade.TransType == "Ask" && buyTrade.TransType == "Bid" && sellTrade.SecurityID == buyTrade.SecurityID {
-				t.writeOut(stub, "in exchange: before executeTrade")
+				t.writeOut("in exchange: before executeTrade")
 				_, err := t.executeTrade(stub, b, buyTrade, s, sellTrade)
 				
 				if err != nil {
@@ -427,7 +426,7 @@ func (t *SimpleChaincode) exchange(stub *shim.ChaincodeStub) ([]byte, error) {
 	}
 	
 	
-	t.writeOut(stub, "in exchange: before return")
+	t.writeOut("in exchange: before return")
 	return nil, nil
 }
 
@@ -590,26 +589,19 @@ func (t *SimpleChaincode) executeTrade(stub *shim.ChaincodeStub, buyTradeIndex i
 // register user
 func (t *SimpleChaincode) registerUser(stub *shim.ChaincodeStub, userID string) ([]byte, error) {
 	fmt.Printf("Running registerUser")
-//need to make sure the user is not already registered
-//need to make another hash to hold the users' id and return thier index
+	//need to make sure the user is not already registered
+	newCash := initialCash
 	
-	var user User
+	if userID == "BANK" {
+		newCash = 100000
+	} 
 	
-	user.UserID = userID
-	user.Status = "Active"
-	user.Ballance = initialCash
-	
-	userByteA, err := json.Marshal(user)
+	index, err := t.userRep.newUser(userID, newCash, "Active")
 	if err != nil {
 		return nil, err
 	}
 	
-	index, err := t.push(stub, userIndex, userByteA)
-	if err != nil {
-		return nil, err
-	}
-	
-	return index, nil
+	return []byte(index), nil
 }
 
 

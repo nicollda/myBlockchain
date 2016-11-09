@@ -38,10 +38,11 @@ import (
 
 // SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
-	userRep UserRepository 
-	holdingsRep HoldingsRepository
-	securitiesRep SecurityRepository
-	tradeRep TradeRepository
+	userRep			UserRepository 
+	holdingsRep		HoldingsRepository
+	securitiesRep	SecurityRepository
+	tradeRep		TradeRepository
+	stub			*shim.ChaincodeStub
 }
 
 
@@ -56,9 +57,10 @@ type SimpleChaincode struct {
 func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Printf("Init called, initializing chaincode")
 	
-	t.writeOut(stub, "in init")
+	t.writeOut("in init")
 	
 	//initialize our repositories
+	t.stub = stub
 	t.userRep.init(stub)
 	t.holdingsRep.init(stub)
 	t.securitiesRep.init(stub)
@@ -69,12 +71,28 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	//var user User
 	var err error
 	
-	_, err = t.userRep.newUser("BANK", 100000)
-	_, err = t.userRep.newUser("Wesley", 1000)
-	_, err = t.userRep.newUser("David", 1000)
-	//userPointer
-	_, err = t.userRep.newUser("Aaron", 1000)
 	
+	//Register some users.  this would normally happen via the UI but we will do it here to simplify
+	
+	_, err = t.registerUser(stub, "BANK")
+	if err != nil {
+		return nil, err
+	}
+	
+	_, err = t.registerUser(stub, "David")
+	if err != nil {
+		return nil, err
+	}
+	
+	_, err = t.registerUser(stub, "Wesley")
+	if err != nil {
+		return nil, err
+	}
+	
+	_, err = t.registerUser(stub, "Aaron")
+	if err != nil {
+		return nil, err
+	}
 	
 	
 	//register our securities and offer them for sale
@@ -122,12 +140,10 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
-	t.userRep.newUser("Aaron", 1000)
 	_, err = t.registerUser(stub, "Aaron")
 	if err != nil {
 		return nil, err
 	}
-	
 	
 	
 	//register some trades
@@ -138,10 +154,10 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	}
 	
 	
-	t.writeOut(stub, "in init: before exchange")
+	t.writeOut("in init: before exchange")
 	_, err = t.exchange(stub)
 	if err != nil {
-		t.writeOut(stub, "in init: after exhcnage in err != nil")
+		t.writeOut("in init: after exhcnage in err != nil")
 		return nil, err
 	}
 	
@@ -151,7 +167,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	_, err = t.dividend(stub, c)
 	
 	if err != nil {
-		t.writeOut(stub, "in init: after registerHeppeing in err != nil")
+		t.writeOut("in init: after registerHeppeing in err != nil")
 		//return nil, err
 	}
 	

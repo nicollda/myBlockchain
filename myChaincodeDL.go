@@ -285,10 +285,10 @@ func (self *UserRepository) init(stub *shim.ChaincodeStub) bool {
 }
 
 
-func (self *UserRepository) newUser(userID string, ballance int) (string,error) {
+func (self *UserRepository) newUser(userID string, ballance int, status string) (string,error) {
 	
 	var user User
-	user.init(userID, ballance)
+	user.init(userID, ballance, status)
 	
 	key, err := self.LinkedList.put(userID, user)
 	if err != nil {
@@ -338,9 +338,9 @@ type User struct {
 	Ballance	int		`json:"ballance"`
 }
 
-func (self *User) init(userID string, ballance int) bool {
+func (self *User) init(userID string, ballance int, status string) bool {
 	self.UserID = userID
-	self.Status = "Active"
+	self.Status = status
 	self.Ballance = ballance
 	
 	return true
