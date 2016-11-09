@@ -41,6 +41,9 @@ import (
 // SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
 	userRep UserRepository 
+	holdingsRep HoldingsRepository
+	securitiesRep SecurityRepository
+	tradeRep TradeRepository
 }
 
 
@@ -58,6 +61,11 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	t.writeOut(stub, "in init")
 
 	t.userRep.init(stub)
+	t.holdingsRep.init(stub)
+	t.securitiesRep.init(stub)
+	t.tradeRep.init(stub)
+	
+	
 	
 	//create a bank with some money
 	var user User
