@@ -30,7 +30,6 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
-	"encoding/json"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
@@ -58,48 +57,37 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	fmt.Printf("Init called, initializing chaincode")
 	
 	t.writeOut(stub, "in init")
-
+	
+	//initialize our repositories
 	t.userRep.init(stub)
 	t.holdingsRep.init(stub)
 	t.securitiesRep.init(stub)
 	t.tradeRep.init(stub)
 	
-	_, err := t.userRep.newUser("BANK", 100000)
-	user, err := t.userRep.getUser("BANK")
-	t.writeOut(stub, "ballance: " + strconv.Itoa(user.getBallance()))
+	
+	//add our users
+	//var user User
+	var err error
+	
+	_, err = t.userRep.newUser("BANK", 100000)
+	_, err = t.userRep.newUser("Wesley", 1000)
+	_, err = t.userRep.newUser("David", 1000)
+	//userPointer
+	_, err = t.userRep.newUser("Aaron", 1000)
 	
 	
-	//create a bank with some money
-	user.UserID = "BANK"
-	user.Status = "Active"
-	user.Ballance = 1000
 	
-	t.userRep.newUser(user.UserID, user.Ballance)
+	//register our securities and offer them for sale
+	var trade Trade
+	var security Security
 	
-	user.Ballance = 2000
+	security.init("Jaime,Killed", "Jaime killes some one")
+	securityPointer, err := t.securitiesRep.newSecurity(security)
+	trade.init("BANK", "Jaime,Killed", securityPointer, "Ask", defaultPrice, 100, "")
+	t.tradeRep.newTrade(trade)
 	
-	t.userRep.updateUser(user.UserID, user)
-	
-	user2, err := t.userRep.getUser(user.UserID)
-	
-	t.writeOut(stub, "New Ballance: " + strconv.Itoa(user2.Ballance))
-	
-	u, err := json.Marshal(user)
-	if err != nil {
-		
-		return nil, err
-	}
-	
-	
-	err = stub.PutState(bankUser, u)
-	if err != nil {
-		return nil, err
-	}
-	
-	// initially offer some happenings
 	
 	a := []string{"Jaime,Killed",strconv.Itoa(defaultPrice), "100", "", "BANK"}
-	
 	_, err = t.registerTrade(stub, "IPO", a)
 	if err != nil {
 		return nil, err
