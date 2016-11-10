@@ -56,7 +56,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	fmt.Printf("Init called, initializing chaincode")
 	
 	t.writeOut("in init")
-
+/*
 	//initialize our repositories
 	t.stub = stub
 	t.userRep.init(stub)
