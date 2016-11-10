@@ -324,8 +324,10 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	buyTrade.Status = "Closed"
 	sellTrade.Status = "Closed"
 	buyHolding.Units = buyHolding.Units + buyTrade.Units  //need to actually determine the units that are being traded
-	sellHolding.Units = sellHolding.Units - buyTrade.Units
 	
+	if sellTrade.UserID != "BANK" {
+		sellHolding.Units = sellHolding.Units - buyTrade.Units
+	}
 	
 	//Saves the changes to the trades
 	_,err = t.tradeRep.updateTrade(buyTradeIndex, buyTrade)
