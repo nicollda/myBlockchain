@@ -31,7 +31,7 @@ import (
 	"fmt"
 	"strconv"
 	"encoding/json"
-//	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
 const separator = 		"::::"
@@ -128,7 +128,7 @@ func (t *SimpleChaincode) holdings(userID string) ([]byte, error) {
 
 
 
-func (t *SimpleChaincode) ballance(userID string) ([]byte, error) {
+func (t *SimpleChaincode) ballance(stub *shim.ChaincodeStub, userID string) ([]byte, error) {
 	fmt.Printf("Running ballance")
 	
 	/*
@@ -138,7 +138,7 @@ func (t *SimpleChaincode) ballance(userID string) ([]byte, error) {
 	}
 	*/
 	
-	test, err := t.stub.GetState("currentOutput")
+	test, err := stub.GetState("currentOutput")
 	return test, err //[]byte("this was a test" + "............." + t.readOut()),nil //[]byte(strconv.Itoa(user.getBallance()) + "............." + t.readOut()), nil
 }
 

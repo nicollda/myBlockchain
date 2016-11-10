@@ -218,7 +218,7 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 		return t.holdings(args[0])  //userID
 	} else if function == "ballance" {
 		// query a users cash on hand
-		return t.ballance(args[0])	//userID
+		return t.ballance(stub, args[0])	//userID
 	} else if function == "users" {
 		// query for list of users
 		return t.users()
