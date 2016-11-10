@@ -57,7 +57,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	
 	t.stub = stub
 	t.stub.PutState("currentOutput", []byte("my test write"))
-	
+	t.writeOut("in init")
 	/*
 	//initialize our repositories
 	t.stub = stub
