@@ -54,11 +54,14 @@ type SimpleChaincode struct {
 //Init the blockchain.  populate a 2x2 grid of potential events for users to buy
 func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Printf("Init called, initializing chaincode")
-	
-	t.writeOut("in init")
-/*
+
+
 	//initialize our repositories
 	t.stub = stub
+	t.writeOut("in init")
+	
+	/*
+	//initialize our repositories
 	t.userRep.init(stub)
 	t.holdingsRep.init(stub)
 	t.securitiesRep.init(stub)
