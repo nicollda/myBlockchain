@@ -50,7 +50,6 @@ func (self *HoldingsRepository) getHolding(userID string, securityID string) (Ho
 	
 	holding, err := self.getHoldingByID(self.getHoldingID(userID, securityID))
 	if err != nil {
-		
 		return holding, errors.New("this is the error")
 	}
 	
@@ -64,7 +63,7 @@ func (self *HoldingsRepository) getHoldingByID(holdingID string) (Holding, error
 	
 	err := self.LinkedList.get(holdingID, &holding)
 	if err != nil {
-		return holding, err
+		return holding, errors.New("this is the error2")
 	}
 	
 	return holding, nil
