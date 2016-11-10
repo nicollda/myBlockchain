@@ -138,9 +138,10 @@ func (t *SimpleChaincode) ballance(stub *shim.ChaincodeStub, userID string) ([]b
 	}
 	*/
 	
-	//test, err := stub.GetState("currentOutput")
-	test := t.readOut()
-	return []byte(test), nil //[]byte("this was a test" + "............." + t.readOut()),nil //[]byte(strconv.Itoa(user.getBallance()) + "............." + t.readOut()), nil
+	bank, _ := t.userRep.getUser("BANK")
+	
+	//test := t.readOut()
+	return []byte(bank.UserID), nil //[]byte("this was a test" + "............." + t.readOut()),nil //[]byte(strconv.Itoa(user.getBallance()) + "............." + t.readOut()), nil
 }
 
 

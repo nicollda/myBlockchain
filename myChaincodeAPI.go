@@ -49,16 +49,9 @@ type SimpleChaincode struct {
 //********************************************************************************************************
 
 
-
-
-//Init the blockchain.  populate a 2x2 grid of potential events for users to buy
-func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
-	fmt.Printf("Init called, initializing chaincode")
-
-
-	//initialize our repositories
+func (t *SimpleChaincode) initObjects(stub *shim.ChaincodeStub) error {
 	t.stub = stub
-	t.writeOut("in init")
+	t.writeOut("in init objects")
 	
 	
 	//initialize our repositories
@@ -67,12 +60,20 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	t.securitiesRep.init(stub)
 	t.tradeRep.init(stub)
 	
-	t.writeOut("in init2")
-	
-	var err error
+	return nil
+}
+
+//Init the blockchain.  populate a 2x2 grid of potential events for users to buy
+func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+	fmt.Printf("Init called, initializing chaincode")
+
+
+	//initialize our repositories
+	t.initObjects(stub)
+
 	
 	//Register some users.  this would normally happen via the UI but we will do it here to simplify	
-	_, err = t.registerUser("BANK")
+	_, err := t.registerUser("BANK")
 	if err != nil {
 		return nil, err
 	}
