@@ -64,7 +64,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	t.securitiesRep.init(stub)
 	t.tradeRep.init(stub)
 	
-	/*
+
 	var err error
 	
 	//Register some users.  this would normally happen via the UI but we will do it here to simplify	
@@ -73,6 +73,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
+	/*
 	_, err = t.registerUser("David")
 	if err != nil {
 		return nil, err
