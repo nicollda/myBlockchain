@@ -60,7 +60,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	t.stub = stub
 	t.writeOut("in init")
 	
-	/*
+	
 	//initialize our repositories
 	t.userRep.init(stub)
 	t.holdingsRep.init(stub)
