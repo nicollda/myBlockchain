@@ -65,8 +65,8 @@ func (self *HoldingsRepository) getHoldingByID(holdingID string) (Holding, error
 	return holding, nil
 }
 
-func (self *HoldingsRepository) updateHolding(userID string, securityID string, holding Holding) (string, error) {
-	key, err := self.LinkedList.put(self.getHoldingID(userID, securityID), holding)
+func (self *HoldingsRepository) updateHolding(holding Holding) (string, error) {
+	key, err := self.LinkedList.put(self.getHoldingID(holding.UserID, holding.SecurityID), holding)
 	if err != nil {
 		return "", err
 	}

@@ -323,8 +323,11 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	
 	var buyUser		User
 	var sellUser	User
+	var buyHolding	Holding
+	var sellHolding	Holding
 	var err			error
 	
+	//get counterparties (need to change "user" to accounts or counterparties)
 	buyUser, err = t.userRep.getUser(buyTrade.getUserID()) 
 	if err != nil {
 		return nil, err
@@ -334,15 +337,30 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	if err != nil {
 		return nil, err
 	}
+		
+	//get holdings
+	buyHolding, err = t.holdingsRep.getHolding(buyTrade.getUserID(), buyTrade.SecurityID) 
+	if err != nil {
+		return nil, err
+	}
+	
+	if sellTrade.UserID != "BANK" {
+		sellHolding, err = t.holdingsRep.getHolding(sellTrade.getUserID(), sellTrade.SecurityID) 
+		if err != nil {
+			return nil, err
+		}
+	}
 	
 	
 	//transfers funds and closes the trades
+	//no transaction rolling back etc...  dont know how best to handle
 	buyUser.Ballance = buyUser.Ballance - defaultPrice
 	sellUser.Ballance = sellUser.Ballance + defaultPrice
 	buyTrade.Status = "Closed"
 	sellTrade.Status = "Closed"
+	buyHolding.Units = buyHolding.Units + buyTrade.Units  //need to actually determine the units that are being traded
+	sellHolding.Units = sellHolding.Units - buyTrade.Units
 	
-	//no transaction rolling back etc...  dont know how best to handle
 	
 	//Saves the changes to the trades
 	_,err = t.tradeRep.updateTrade(buyTradeIndex, buyTrade)
@@ -366,28 +384,14 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 		return nil, err
 	}
 	
-	
-	var shareKey Holding
-	shareKey.UserID = buyTrade.UserID
-	shareKey.SecurityID = buyTrade.SecurityID
-	
-	//adjust Holdings for buyer and seller
-	shareKeyByteA, err := json.Marshal(shareKey)
-	if err != nil {
-		return nil, err
-	}
-	
-	unitsString:= strconv.Itoa(buyTrade.Units)
-	err = t.stub.PutState(string(shareKeyByteA), []byte(unitsString))
+	//Save changes to the holdings
+	_,err = t.holdingsRep.updateHolding(buyHolding)
 	if err != nil {
 		return nil, err
 	}
 	
 	if sellTrade.UserID != "BANK" {
-		shareKey.UserID = sellTrade.UserID
-		
-		//remove holdings from seller.  should really only delstate if units = 0 but this is not inplimented
-		err = t.stub.DelState(string(shareKeyByteA))
+		_,err = t.holdingsRep.updateHolding(sellHolding)
 		if err != nil {
 			return nil, err
 		}
