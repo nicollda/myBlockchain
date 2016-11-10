@@ -312,7 +312,7 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	//get holdings
 	buyHolding, err = t.holdingsRep.getHolding(buyTrade.getUserID(), buyTrade.SecurityID) 
 	if err != nil {
-		return nil, err
+		return nil, errors.New("this is the error3")
 	}
 	
 	buyHolding.UserID = buyHolding.UserID
@@ -375,6 +375,8 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 		}
 	}
 	*/
+	
+	t.writeOut("in exexcute trade: before return")
 	return nil, nil
 }
 
