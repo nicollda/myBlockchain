@@ -56,7 +56,6 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	fmt.Printf("Init called, initializing chaincode")
 	t.writeOut("in init")
 	
-	var err error
 	
 	//initialize our repositories
 	t.stub = stub
@@ -65,6 +64,8 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	t.securitiesRep.init(stub)
 	t.tradeRep.init(stub)
 	
+	/*
+	var err error
 	
 	//Register some users.  this would normally happen via the UI but we will do it here to simplify	
 	_, err = t.registerUser("BANK")

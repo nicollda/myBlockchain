@@ -125,17 +125,15 @@ func (t *SimpleChaincode) holdings(userID string) ([]byte, error) {
 
 
 func (t *SimpleChaincode) ballance(userID string) ([]byte, error) {
-	fmt.Printf("Running cash")
+	fmt.Printf("Running ballance")
 	
-	
-	fmt.Printf("Running holdings")
-	
+	/*
 	user, err := t.userRep.getUser(userID)
 	if err != nil {
 		return nil, err
 	}
-	
-	return []byte(strconv.Itoa(user.getBallance()) + "............." + t.readOut()), nil
+	*/
+	return []byte("this was a test"),nil //[]byte(strconv.Itoa(user.getBallance()) + "............." + t.readOut()), nil
 }
 
 
