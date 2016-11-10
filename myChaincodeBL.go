@@ -258,7 +258,7 @@ func (t *SimpleChaincode) exchange() ([]byte, error) {
 			if err != nil {
 				return nil, err
 			}
-			t.writeOut(sellTrade.Status)
+			t.writeOut(buyTrade.Status)
 			//t.writeOut(sellTrade.Status + " " + ")
 			if sellTrade.Status == "Active" && buyTrade.Status == "Active" && sellTrade.TransType == "ask" && buyTrade.TransType == "bid" && sellTrade.SecurityID == buyTrade.SecurityID {
 				t.writeOut("in exchange: before executeTrade")

@@ -113,22 +113,22 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	}
 	
 	//the bank does an IPO
-	_, err = t.registerTrade("ipo", "BANK", "Jaime,Killed", defaultPrice, 100, "")
+	_, err = t.registerTrade("ask", "BANK", "Jaime,Killed", defaultPrice, 100, "")
 	if err != nil {
 		return nil, err
 	}
 	
-	_, err = t.registerTrade("ipo", "BANK", "Jaime,Killer", defaultPrice, 100, "")
+	_, err = t.registerTrade("ask", "BANK", "Jaime,Killer", defaultPrice, 100, "")
 	if err != nil {
 		return nil, err
 	}
 	
-	_, err = t.registerTrade("ipo", "BANK", "Jon,Killed", defaultPrice, 100, "")
+	_, err = t.registerTrade("ask", "BANK", "Jon,Killed", defaultPrice, 100, "")
 	if err != nil {
 		return nil, err
 	}
 	
-	_, err = t.registerTrade("ipo", "BANK", "Jon,Killer", defaultPrice, 100, "")
+	_, err = t.registerTrade("ask", "BANK", "Jon,Killer", defaultPrice, 100, "")
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +161,7 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	if function == "init" {
 		fmt.Printf("Function is init")
 		return t.Init(stub, function, args)
-	} else if function == "ipo" || function == "ask" || function == "bid" {
+	} else if function == "ask" || function == "bid" {
 		// offers squares up for sale as initial public offering
 		fmt.Printf("Function is trade")
 		
