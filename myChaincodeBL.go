@@ -287,9 +287,9 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	fmt.Printf("Running exchange")
 	
 	var buyUser		User
-	var sellUser	User
-	var buyHolding	Holding
-	var sellHolding	Holding
+	//var sellUser	User
+	//var buyHolding	Holding
+	//var sellHolding	Holding
 	var err			error
 	
 	//get counterparties (need to change "user" to accounts or counterparties)
@@ -298,11 +298,14 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 		return nil, err
 	}
 	
+	buyUser.UserID = buyUser.UserID
+	
+	/*
 	sellUser, err = t.userRep.getUser(sellTrade.getUserID()) 
 	if err != nil {
 		return nil, err
 	}
-		
+	/*
 	//get holdings
 	buyHolding, err = t.holdingsRep.getHolding(buyTrade.getUserID(), buyTrade.SecurityID) 
 	if err != nil {
