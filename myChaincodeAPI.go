@@ -204,7 +204,7 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 	if function == "holdings" {
 		// query a users holdings
 		return t.holdings(args[0])  //userID
-	} else if function == "cash" {
+	} else if function == "ballance" {
 		// query a users cash on hand
 		return t.ballance(args[0])	//userID
 	} else if function == "users" {
@@ -215,7 +215,7 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 		return t.securities()
 	} else {
 		fmt.Printf("Function is query")
-		return nil, errors.New("Invalid query function name. Expecting holdings, cash, users or securities")
+		return nil, errors.New("Invalid query function name. Expecting holdings, ballance, users or securities")
 	}	
 	
 	return nil, nil
