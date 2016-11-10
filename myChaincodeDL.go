@@ -287,6 +287,12 @@ func (self *Trade) init(userID string, securityID string, securityPointer int, t
 
 
 
+func (self *Trade) getUserID() string {
+	return self.UserID
+}
+
+
+
 //********************************
 //         User Repository
 //********************************
@@ -325,8 +331,8 @@ func (self *UserRepository) getUser(userId string) (User, error) {
 	return user, nil
 }
 
-func (self *UserRepository) updateUser(userID string, user User) (string, error) {
-	key, err := self.LinkedList.put(userID, user)
+func (self *UserRepository) updateUser(user User) (string, error) {
+	key, err := self.LinkedList.put(user.UserID, user)
 	if err != nil {
 		return "", err
 	}

@@ -24,9 +24,7 @@ under the License.
 
 
 
-
 package main
-
 
 import (
 	"errors"
@@ -44,8 +42,37 @@ const holdingIndex =	"HoldingIndex" + separator
 const initialCash =		1000
 const payout =			5
 const defaultPrice =	5
+
+
+//********************************************************************************************************
+//****                        Debug function inplimentations                                          ****
+//********************************************************************************************************
+
+
 const debug =			true
 
+
+func (t *SimpleChaincode) writeOut(out string) ([]byte, error) {
+	if debug {
+		curOutByteA,err := t.stub.GetState("currentOutput")
+		outByteA := []byte(string(curOutByteA) + ":::" + out)
+		err = t.stub.PutState("currentOutput", outByteA)
+		return nil, err
+	}
+	
+	return nil, nil
+}
+
+
+
+func (t *SimpleChaincode) readOut() string {
+	if debug {
+		curOutByteA,_ := t.stub.GetState("currentOutput")
+		return string(curOutByteA)
+	}
+	
+	return ""
+}
 
 
 
@@ -53,6 +80,7 @@ const debug =			true
 //********************************************************************************************************
 //****                        Query function inplimentations                                          ****
 //********************************************************************************************************
+
 
 
 func (t *SimpleChaincode) securities() ([]byte, error) {
@@ -67,6 +95,7 @@ func (t *SimpleChaincode) securities() ([]byte, error) {
 }
 
 
+
 func (t *SimpleChaincode) users() ([]byte, error) {
 	u := []string {"David", "Aaron", "Wesley"}
 	
@@ -78,8 +107,12 @@ func (t *SimpleChaincode) users() ([]byte, error) {
 	return uByteA, nil
 }
 
+
+
 func (t *SimpleChaincode) holdings(userID string) ([]byte, error) {
 	fmt.Printf("Running holdings")
+	
+	// this was supposed to be holding not ballance.  needs to be rewritten
 	
 	user, err := t.userRep.getUser(userID)
 	if err != nil {
@@ -87,58 +120,29 @@ func (t *SimpleChaincode) holdings(userID string) ([]byte, error) {
 	}
 	
 	return []byte(strconv.Itoa(user.getBallance())), nil
-	
 }
+
+
 
 func (t *SimpleChaincode) ballance(userID string) ([]byte, error) {
 	fmt.Printf("Running cash")
 	
 	
-	curOutByteA, err := t.stub.GetState("currentOutput") //tradeIndex + "5") //bankUser)//"LastTradeIndex")//bankUser)  //userIndex + "BANK")
+	fmt.Printf("Running holdings")
+	
+	user, err := t.userRep.getUser(userID)
 	if err != nil {
 		return nil, err
 	}
 	
-	var shareKey Holding
-	shareKey.UserID = "Aaron"
-	shareKey.SecurityID = "Jaime,Killed"
-
-	
-	shareKeyByteA, err := json.Marshal(shareKey)
-	if err != nil {
-		return nil, err
-	}
-	
-	tradeOutByteA, err := t.stub.GetState(string(shareKeyByteA)) //tradeIndex+ "5") //bankUser)//"LastTradeIndex")//bankUser)  //userIndex + "BANK")
-	if err != nil {
-		return nil, err
-	}
-	
-	aaronByteA, err := t.stub.GetState(userIndex + "3") 
-	
-	//json.Unmarshal(bank, &bankString)
-/*	
-	var user User
-	
-	err = json.Unmarshal(bank, &user)
-	if err != nil {
-		return nil, err
-	}
-	
-*/	
-	
-	
-	return []byte(string(curOutByteA) + "        " + string(tradeOutByteA) + "         " + string(aaronByteA)), nil//[]byte(strconv.Itoa(user.Cash)), nil
+	return []byte(strconv.Itoa(user.getBallance()) + "............." + t.readOut()), nil
 }
-
 
 
 
 //********************************************************************************************************
 //****                        Invoke function inplimentations                                          ****
 //********************************************************************************************************
-
-
 
 
 
@@ -257,18 +261,6 @@ func (t *SimpleChaincode) dividend(securityID string) ([]byte, error) {
 }
 
 
-func (t *SimpleChaincode) writeOut(out string) ([]byte, error) {
-	if debug {
-		curOutByteA,err := t.stub.GetState("currentOutput")
-		outByteA := []byte(string(curOutByteA) + ":::" + out)
-		err = t.stub.PutState("currentOutput", outByteA)
-		return nil, err
-	}
-	
-	return nil, nil
-}
-
-
 
 // run on a schedule to execute any pending trades. matching asks with bids and updating the ledger
 // first iteration will:
@@ -312,17 +304,12 @@ func (t *SimpleChaincode) exchange() ([]byte, error) {
 					return nil, err
 				}
 			}
-		}	
+		}
 	}
-	
 	
 	t.writeOut("in exchange: before return")
 	return nil, nil
 }
-
-
-
-
 
 
 
@@ -334,60 +321,19 @@ func (t *SimpleChaincode) exchange() ([]byte, error) {
 func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTradeIndex int, sellTrade Trade) ([]byte, error) {
 	fmt.Printf("Running exchange")
 	
-	var buyUser 	User
-	var buyerIndex	int
-	var sellUser 	User
-	var sellerIndex	int
-	var numberUsers	int
-	var tempUser	User
+	var buyUser		User
+	var sellUser	User
+	var err			error
 	
-	
-	
-	numberUsersByteA, err := t.stub.GetState("Last" + userIndex)  //should be through data layer
+	buyUser, err = t.userRep.getUser(buyTrade.getUserID()) 
 	if err != nil {
 		return nil, err
 	}
 	
-	numberUsers, err = strconv.Atoi(string(numberUsersByteA))
+	sellUser, err = t.userRep.getUser(sellTrade.getUserID()) 
 	if err != nil {
 		return nil, err
 	}
-	
-	//finds the counterparties involved
-	//this is no good.  should have another hash to get the index of the user in the array or maybe store it in the trades?
-	for i := 1; i <= numberUsers; i++ {
-		userByteA, err := t.stub.GetState(userIndex + strconv.Itoa(i))
-		if err != nil {
-			return nil, err
-		}
-		
-		err = json.Unmarshal(userByteA, &tempUser)
-		if err != nil {
-			return nil, err
-		}
-		
-		if buyTrade.UserID == tempUser.UserID {
-			buyUser = tempUser
-			buyerIndex = i
-		}
-		
-		if sellTrade.UserID == tempUser.UserID {
-			sellUser = tempUser
-			sellerIndex = i
-		}
-	}
-	
-	if sellTrade.UserID == "BANK" {
-		sellerUserByteA, err := t.stub.GetState(userIndex + "BANK")
-		if err != nil {
-			return nil, err
-		}
-		err = json.Unmarshal(sellerUserByteA, &sellUser)
-		if err != nil {
-			return nil, err
-		}
-	}
-	
 	
 	
 	//transfers funds and closes the trades
@@ -397,53 +343,29 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	sellTrade.Status = "Closed"
 	
 	//no transaction rolling back etc...  dont know how best to handle
-	buyUserByteA, err := json.Marshal(buyUser)
+	
+	//Saves the changes to the trades
+	_,err = t.tradeRep.updateTrade(buyTradeIndex, buyTrade)
 	if err != nil {
 		return nil, err
 	}
 	
-	sellUserByteA, err := json.Marshal(sellUser)
+	_,err = t.tradeRep.updateTrade(sellTradeIndex, sellTrade)
 	if err != nil {
 		return nil, err
 	}
 	
-	//Saves the changes to the buyer
-	err = t.stub.PutState(userIndex + strconv.Itoa(buyerIndex), buyUserByteA)
+	//Saves the changes to the seller and buyer
+	_,err = t.userRep.updateUser(buyUser)
 	if err != nil {
 		return nil, err
 	}
 	
-	
-	//Saves the changes to the seller
-	err = t.stub.PutState(userIndex + strconv.Itoa(sellerIndex), sellUserByteA)
+	_,err = t.userRep.updateUser(sellUser)
 	if err != nil {
 		return nil, err
 	}
 	
-	
-	buyTradeByteA, err := json.Marshal(buyTrade)
-	if err != nil {
-		return nil, err
-	}
-	
-	sellTradeByteA, err := json.Marshal(sellTrade)
-	if err != nil {
-		return nil, err
-	}
-	
-	
-	//Saves the changes to the buy trade
-	err = t.stub.PutState(tradeIndex + strconv.Itoa(buyTradeIndex), buyTradeByteA)
-	if err != nil {
-		return nil, err
-	}
-	
-	
-	//saves the changes to the sell trade
-	err = t.stub.PutState(tradeIndex + strconv.Itoa(sellTradeIndex), sellTradeByteA)
-	if err != nil {
-		return nil, err
-	}
 	
 	var shareKey Holding
 	shareKey.UserID = buyTrade.UserID
@@ -493,6 +415,7 @@ func (t *SimpleChaincode) registerUser(userID string) ([]byte, error) {
 	
 	return []byte(index), nil
 }
+
 
 
 //   curently not used but should be used in place of taking the user id via the interface.  user id should come from the security model
