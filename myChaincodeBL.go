@@ -197,61 +197,23 @@ func (t *SimpleChaincode) registerSecurity(securityID string, desc string) ([]by
 
 
 // called by the moderator watson?  to specify that an event happened pay it out
-func (t *SimpleChaincode) dividend(securityID string) ([]byte, error) {
+func (t *SimpleChaincode) dividend(securityID string, amount int) ([]byte, error) {
 	fmt.Printf("Running dividend")
-	
 	t.writeOut("in dividend")
 	
-	var shareKey Holding
-	var numberUsers int
-	var currentUser User
-	
-	shareKey.SecurityID = securityID
-	
-	
-	//todo: need to make data abstraction
-	numberUsersByteA, err := t.stub.GetState("Last" + userIndex)
-	if err != nil {
-		return nil, err
-	}
-	
-	numberUsers, err = strconv.Atoi(string(numberUsersByteA))
-	if err != nil {
-		return nil, err
-	}
-	
-	t.writeOut("in dividend: before for loop")
-	//For each user
-	for i := 1; i <= numberUsers; i++ {
-		currentUserByteA, err := t.stub.GetState(userIndex + strconv.Itoa(i))
-		err = json.Unmarshal(currentUserByteA, &currentUser)
-		if err != nil {
-			return nil, err
-		}
-		
-		//create a string to look up the number of shares using , userid, char and event.  the result is number of shares
-		shareKey.UserID = currentUser.UserID
-		
-		shareKeyByteA, err := json.Marshal(shareKey)
-		if err != nil {
-			return nil, err
-		}
-		
-		numberSharesByteA, err := t.stub.GetState(string(shareKeyByteA))
-		numberShares, err := strconv.Atoi(string(numberSharesByteA))
-		
-		
-		if err == nil {  //means the user has stock in this security
-			if currentUser.Status == "Active" && numberShares > 0 {
-				
-				currentUser.Ballance = currentUser.Ballance + payout		//todo:  should be transfer of funds not "creating money".  
-				
-				currentUserByteA,err := json.Marshal(currentUser)
-				if err != nil {
-					return nil, err
-				}
-				
-				t.stub.PutState(userIndex + strconv.Itoa(i), currentUserByteA)  //should be via data layer
+	//For each holding
+	for holding, err := t.holdingsRep.getFirstHolding(); err==nil; holding, err = t.holdingsRep.getNextHolding(){
+		if holding.SecurityID == securityID {
+			//payout user
+			user, err := t.userRep.getUser(holding.UserID)
+			if err != nil {
+				return nil, err
+			}
+			
+			user.Ballance = user.Ballance + amount
+			_,err = t.userRep.updateUser(user)
+			if err != nil {
+				return nil, err
 			}
 		}
 	}

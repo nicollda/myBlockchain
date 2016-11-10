@@ -22,14 +22,15 @@ import (
 //********************************************************************************
 //wraps the payload (struct we want to save) in a new struct that acts as a linked list
 type LinkedListNode struct {
-	NextNode string	`json:"nextnode"`
-	Payload []byte	`json:"payload"`
+	NextNode string
+	Payload []byte
 }
 
 type ChainLinkedList struct {
 	stub *shim.ChaincodeStub
 	mapName string
 	originKey string
+	nextNode string
 }
 
 func (self *ChainLinkedList) init(stub *shim.ChaincodeStub, mapName string) bool {
@@ -45,6 +46,40 @@ func (self *ChainLinkedList) getKey(key string) string {
 	return self.mapName + key
 }
 
+
+func (self *ChainLinkedList) getFirst(returnVal interface{}) error {
+	self.nextNode = self.originKey
+	err := self.getNext(&returnVal)
+	if err != nil {
+		return err
+	}
+	
+	return nil
+}
+
+
+
+func (self *ChainLinkedList) getNext(returnVal interface{}) error {
+	lByteA, err := self.stub.GetState(self.nextNode)
+	if err != nil {
+		return err
+	}
+	
+	var llNode LinkedListNode
+	err = json.Unmarshal(lByteA, &llNode)
+	if err != nil {
+		return err
+	}
+	
+	self.nextNode = llNode.NextNode
+	
+	err = json.Unmarshal(llNode.Payload, &returnVal)
+	if err != nil {
+		return err
+	}
+	
+	return nil
+}
 
 
 func (self *ChainLinkedList) get(key string, returnVal interface{}) error {

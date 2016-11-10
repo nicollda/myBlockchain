@@ -134,7 +134,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	}
 	
 	//offer a to payoff anyone with Jaime,Killed (Aaron)
-	_, err = t.dividend("Jaime,Killed")
+	_, err = t.dividend("Jaime,Killed", 5)
 	if err != nil {
 		t.writeOut("in init: after registerHeppeing in err != nil")
 		return nil, err
@@ -178,7 +178,12 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	} else if function == "dividend" {
 		// enter an an character event happening in the show.  pays out to users holding squares
 		fmt.Printf("Function is ask")
-		return t.dividend(args[0])
+		
+		amount, err := strconv.Atoi(args[1])
+		if err != nil {
+			return nil, err
+		}
+		return t.dividend(args[0], amount)
 	} else if function == "exchange" {
 		// matches trades and excecutes any matches
 		fmt.Printf("Function is exchange")

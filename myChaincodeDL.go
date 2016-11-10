@@ -1,6 +1,5 @@
 package main
 
-
 import (
 //	"errors"
 //	"fmt"
@@ -16,6 +15,7 @@ type HoldingsRepository struct {
 	LinkedList ChainLinkedList
 }
 
+
 func (self *HoldingsRepository) init(stub *shim.ChaincodeStub) bool {
 	self.LinkedList.init(stub, holdingIndex)
 	
@@ -23,10 +23,10 @@ func (self *HoldingsRepository) init(stub *shim.ChaincodeStub) bool {
 }
 
 
+
 func (self *HoldingsRepository) getHoldingID(userID string, securityID string) string {
 	return userID + securityID
 }
-
 
 
 
@@ -43,6 +43,8 @@ func (self *HoldingsRepository) newHolding(userID string, securityID string, uni
 	return key, nil
 }
 
+
+
 func (self *HoldingsRepository) getHolding(userID string, securityID string) (Holding, error) {
 	var holding Holding
 	
@@ -53,6 +55,8 @@ func (self *HoldingsRepository) getHolding(userID string, securityID string) (Ho
 	
 	return holding, nil
 }
+
+
 
 func (self *HoldingsRepository) getHoldingByID(holdingID string) (Holding, error) {
 	var holding Holding
@@ -65,6 +69,34 @@ func (self *HoldingsRepository) getHoldingByID(holdingID string) (Holding, error
 	return holding, nil
 }
 
+
+
+func (self *HoldingsRepository) getFirstHolding() (Holding, error) {
+	var holding Holding
+	
+	err := self.LinkedList.getFirst(&holding)
+	if err != nil {
+		return holding, err
+	}
+	
+	return holding, nil
+}
+
+
+
+func (self *HoldingsRepository) getNextHolding() (Holding, error) {
+	var holding Holding
+	
+	err := self.LinkedList.getFirst(&holding)
+	if err != nil {
+		return holding, err
+	}
+	
+	return holding, nil
+}
+
+
+
 func (self *HoldingsRepository) updateHolding(holding Holding) (string, error) {
 	key, err := self.LinkedList.put(self.getHoldingID(holding.UserID, holding.SecurityID), holding)
 	if err != nil {
@@ -73,6 +105,8 @@ func (self *HoldingsRepository) updateHolding(holding Holding) (string, error) {
 	
 	return key, nil
 }
+
+
 
 func (self *HoldingsRepository) deleteHolding(userID string, securityID string,) error {
 	err := self.LinkedList.del(self.getHoldingID(userID, securityID))
@@ -85,8 +119,6 @@ func (self *HoldingsRepository) deleteHolding(userID string, securityID string,)
 
 
 
-
-
 //********************************
 //         Holding
 //********************************
@@ -95,6 +127,8 @@ type Holding struct {
 	UserID		string	`json:"userid"`
 	Units		int		`json:"units"`
 }
+
+
 
 func (self *Holding) init(userID string, securityID string, units int) bool {
 	self.UserID = userID
@@ -114,20 +148,23 @@ func (self *Holding) updateUnits(units int) bool {
 
 
 
-
 //********************************
 //         Security Repository
 //********************************
-
-type SecurityRepository struct {
+ 
+ type SecurityRepository struct {
 	chainArray ChainArray
 }
+
+
 
 func (self *SecurityRepository) init(stub *shim.ChaincodeStub) bool {
 	self.chainArray.init(stub, securityIndex)
 	
 	return true
 }
+
+
 
 func (self *SecurityRepository) newSecurity(security Security) (int, error) {    //new trade returns "trade" or takes trade???
 	index, err := self.chainArray.appendValue(security)
@@ -136,6 +173,8 @@ func (self *SecurityRepository) newSecurity(security Security) (int, error) {   
 	}
 	return index, nil
 }
+
+
 
 func (self *SecurityRepository) getSecurityPosition(securityID string) (int, error) {
 	var security Security 
@@ -159,6 +198,7 @@ func (self *SecurityRepository) getSecurityPosition(securityID string) (int, err
 }
 
 
+
 func (self *SecurityRepository) getSecurityByPostion(index int) (Security, error) {
 	var security Security
 	
@@ -171,6 +211,7 @@ func (self *SecurityRepository) getSecurityByPostion(index int) (Security, error
 }
 
 
+
 func (self *SecurityRepository) updateSecurity(index int, security Security) (string, error) {
 	key, err := self.chainArray.put(index, security)
 	if err != nil {
@@ -181,15 +222,18 @@ func (self *SecurityRepository) updateSecurity(index int, security Security) (st
 }
 
 
+
 //********************************
 //         Security
 //********************************
+
 
 type Security struct {
 	SecurityID		string	`json:"securityid"`
 	Description		string	`json:"description"`
 	Status			string	`json:"status"`
 }
+
 
 
 func (self *Security) init(securityID string, description string) bool {
@@ -202,20 +246,24 @@ func (self *Security) init(securityID string, description string) bool {
 
 
 
-
 //********************************
 //         Trade Repository
 //********************************
 
+
 type TradeRepository struct {
 	chainArray ChainArray
 }
+
+
 
 func (self *TradeRepository) init(stub *shim.ChaincodeStub) bool {
 	self.chainArray.init(stub, tradeIndex)
 	
 	return true
 }
+
+
 
 func (self *TradeRepository) newTrade(trade Trade) (int, error) {    //new trade returns "trade" or takes trade???
 	index, err := self.chainArray.appendValue(trade)
@@ -224,6 +272,8 @@ func (self *TradeRepository) newTrade(trade Trade) (int, error) {    //new trade
 	}
 	return index, nil
 }
+
+
 
 func (self *TradeRepository) getTradeByPosition(index int) (Trade, error) {
 	var trade Trade
@@ -236,6 +286,8 @@ func (self *TradeRepository) getTradeByPosition(index int) (Trade, error) {
 	return trade, nil
 }
 
+
+
 func (self *TradeRepository) getLastIndex() (int, error) {
 	lastIndex, err := self.chainArray.getLastIndex()
 	if err != nil {
@@ -244,6 +296,8 @@ func (self *TradeRepository) getLastIndex() (int, error) {
 	
 	return lastIndex, nil
 }
+
+
 
 func (self *TradeRepository) updateTrade(index int, trade Trade) (string, error) {
 	key, err := self.chainArray.put(index, trade)
@@ -255,9 +309,11 @@ func (self *TradeRepository) updateTrade(index int, trade Trade) (string, error)
 }
 
 
+
 //********************************
 //         Trade
 //********************************
+
 
 type Trade struct {
 	UserID			string	`json:"userid"`
@@ -270,6 +326,8 @@ type Trade struct {
 	Expiry			string	`json:"expiry"`
 	Fulfilled		int		`json:"fulfilled"`
 }
+
+
 
 func (self *Trade) init(userID string, securityID string, securityPointer int, transType string, price float64, units int, expiry string) bool {
 	self.UserID = userID
@@ -301,10 +359,13 @@ type UserRepository struct {
 	LinkedList ChainLinkedList
 }
 
+
+
 func (self *UserRepository) init(stub *shim.ChaincodeStub) bool {
 	self.LinkedList.init(stub, userIndex)
 	return true
 }
+
 
 
 func (self *UserRepository) newUser(userID string, ballance int, status string) (string,error) {
@@ -320,6 +381,8 @@ func (self *UserRepository) newUser(userID string, ballance int, status string) 
 	return key, nil
 }
 
+
+
 func (self *UserRepository) getUser(userId string) (User, error) {
 	var user User
 	
@@ -331,6 +394,8 @@ func (self *UserRepository) getUser(userId string) (User, error) {
 	return user, nil
 }
 
+
+
 func (self *UserRepository) updateUser(user User) (string, error) {
 	key, err := self.LinkedList.put(user.UserID, user)
 	if err != nil {
@@ -340,6 +405,8 @@ func (self *UserRepository) updateUser(user User) (string, error) {
 	return key, nil
 }
 
+
+
 func (self *UserRepository) deleteUser(userID string) error {
 	err :=  self.LinkedList.del(userID)
 	if err != nil {
@@ -348,6 +415,7 @@ func (self *UserRepository) deleteUser(userID string) error {
 	
 	return nil
 }
+
 
 
 //********************************
@@ -360,6 +428,8 @@ type User struct {
 	Ballance	int		`json:"ballance"`
 }
 
+
+
 func (self *User) init(userID string, ballance int, status string) bool {
 	self.UserID = userID
 	self.Status = status
@@ -367,6 +437,8 @@ func (self *User) init(userID string, ballance int, status string) bool {
 	
 	return true
 }
+
+
 
 func (self *User) getBallance() int {
 	return self.Ballance
