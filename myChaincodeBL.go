@@ -131,17 +131,13 @@ func (t *SimpleChaincode) holdings(userID string) ([]byte, error) {
 func (t *SimpleChaincode) ballance(stub *shim.ChaincodeStub, userID string) ([]byte, error) {
 	fmt.Printf("Running ballance")
 	
-	/*
+
 	user, err := t.userRep.getUser(userID)
 	if err != nil {
 		return nil, err
 	}
-	*/
 	
-	bank, _ := t.userRep.getUser("BANK")
-	
-	//test := t.readOut()
-	return []byte(bank.UserID), nil //[]byte("this was a test" + "............." + t.readOut()),nil //[]byte(strconv.Itoa(user.getBallance()) + "............." + t.readOut()), nil
+	return []byte("Ballance: " + strconv.Itoa(user.getBallance()) + "............." + t.readOut()), nil
 }
 
 
