@@ -67,7 +67,11 @@ func (t *SimpleChaincode) writeOut(out string) ([]byte, error) {
 
 func (t *SimpleChaincode) readOut() string {
 	if debug {
-		curOutByteA,_ := t.stub.GetState("currentOutput")
+		curOutByteA, err := t.stub.GetState("currentOutput")
+		if err != nil {
+			return "error"
+		}
+		
 		return string(curOutByteA)
 	}
 	
