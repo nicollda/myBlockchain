@@ -55,7 +55,10 @@ type SimpleChaincode struct {
 func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Printf("Init called, initializing chaincode")
 	
+	t.stub = stub
+	t.stub.PutState("currentOutput", []byte("my test write"))
 	
+	/*
 	//initialize our repositories
 	t.stub = stub
 	t.userRep.init(stub)
