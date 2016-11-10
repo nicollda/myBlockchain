@@ -4,8 +4,6 @@ package main
 import (
 //	"errors"
 //	"fmt"
-//	"strconv"
-//	"encoding/json"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
@@ -117,18 +115,6 @@ func (self *Holding) updateUnits(units int) bool {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 //********************************
 //         Security Repository
 //********************************
@@ -150,6 +136,28 @@ func (self *SecurityRepository) newSecurity(security Security) (int, error) {   
 	}
 	return index, nil
 }
+
+func (self *SecurityRepository) getSecurityPosition(securityID string) (int, error) {
+	var security Security 
+	returnVal := 0
+	lastIndex, err := self.chainArray.getLastIndex()
+	
+	for i:= 1; i<=lastIndex; i++ {
+		security, err = self.getSecurityByPostion(i)
+		if err != nil {
+			return 0, err
+		}
+		
+		if security.SecurityID == securityID {
+			returnVal = i
+			i = lastIndex + 1
+		}
+	}
+
+	return returnVal, nil
+
+}
+
 
 func (self *SecurityRepository) getSecurityByPostion(index int) (Security, error) {
 	var security Security
@@ -187,7 +195,7 @@ type Security struct {
 func (self *Security) init(securityID string, description string) bool {
 	self.SecurityID = securityID
 	self.Description = description
-	self.Status = "Active"
+	self.Status = "Active"	//should be in BL
 	
 	return true
 }
@@ -262,9 +270,9 @@ func (self *Trade) init(userID string, securityID string, securityPointer int, t
 	self.TransType = transType
 	self.Price = price
 	self.Units = units
-	self.Status = "Active"
+	self.Status = "Active"	//should be in BL
 	self.Expiry = expiry
-	self.Fulfilled = 0
+	self.Fulfilled = 0		//should be in BL
 	
 	return true
 }
