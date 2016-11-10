@@ -160,7 +160,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Printf("Invoke called, determining function")
 	
-		t.stub = stub //for some reason the stub changes each call
+	t.initObjects(stub) //for some reason the stub changes each call
 	// Handle different functions
 	if function == "init" {
 		fmt.Printf("Function is init")
@@ -214,7 +214,7 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Printf("Query called, determining function")
 	
-	t.stub = stub
+	t.initObjects(stub)
 	// Handle different functions
 	if function == "holdings" {
 		// query a users holdings
