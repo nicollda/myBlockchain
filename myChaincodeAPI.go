@@ -87,6 +87,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
+	/*
 	
 	//register our securities and offer them for sale
 	_, err = t.registerSecurity("Jaime,Killed", "Jaime gets killed")
@@ -140,7 +141,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
-	
+	*/
 	return nil, nil
 }
 
