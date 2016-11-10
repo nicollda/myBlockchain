@@ -212,6 +212,7 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Printf("Query called, determining function")
 	
+	t.stub = stub
 	// Handle different functions
 	if function == "holdings" {
 		// query a users holdings
