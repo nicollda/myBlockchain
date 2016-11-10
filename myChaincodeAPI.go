@@ -55,10 +55,8 @@ type SimpleChaincode struct {
 func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Printf("Init called, initializing chaincode")
 	
-	t.stub = stub
-	t.stub.PutState("currentOutput", []byte("my test write"))
 	t.writeOut("in init")
-	/*
+
 	//initialize our repositories
 	t.stub = stub
 	t.userRep.init(stub)
@@ -66,7 +64,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	t.securitiesRep.init(stub)
 	t.tradeRep.init(stub)
 	
-	t.writeOut("in init")
+	t.writeOut("in init2")
 	
 /*
 	var err error
@@ -159,6 +157,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Printf("Invoke called, determining function")
 	
+		t.stub = stub //for some reason the stub changes each call
 	// Handle different functions
 	if function == "init" {
 		fmt.Printf("Function is init")
