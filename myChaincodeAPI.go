@@ -138,17 +138,17 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
-	//offer a to payoff anyone with Jaime,Killed (Aaron)
+	t.writeOut("Before dividend")
+	//offer payoff anyone with Jaime,Killed (Aaron)
 	_, err = t.dividend("Jaime,Killed", 50)
 	if err != nil {
-		t.writeOut("in init: after registerHeppeing in err != nil")
+		t.writeOut("in init: after dividend in err != nil")
 		return nil, err
 	}
 	
+	t.writeOut("Before return")
 	return nil, nil
 }
-
-
 
 
 
