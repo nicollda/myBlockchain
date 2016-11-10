@@ -69,7 +69,6 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	
 	t.writeOut("in init2")
 	
-/*
 	var err error
 	
 	//Register some users.  this would normally happen via the UI but we will do it here to simplify	
