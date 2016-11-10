@@ -279,50 +279,32 @@ func (t *SimpleChaincode) writeOut(out string) ([]byte, error) {
 //		or if user is active
 func (t *SimpleChaincode) exchange() ([]byte, error) {
 	fmt.Printf("Running exchange")
-	
 	t.writeOut("in exchange")
 	
 	var buyTrade	Trade
 	var sellTrade	Trade
 	
-	numberTradesByteA, err := t.stub.GetState("Last" + tradeIndex)  //should be through data layer
+	numberTrades, err := t.tradeRep.getLastIndex()
 	if err != nil {
 		return nil, err
 	}
-	
-	numberTrades, err := strconv.Atoi(string(numberTradesByteA))
-	if err != nil {
-		return nil, err
-	}
-	
 	
 	t.writeOut("in exchange: before matching loop")
 	//trade matching loop
 	for b := 1; b <= numberTrades; b++{
-		bTradeByteA, err := t.stub.GetState(tradeIndex + strconv.Itoa(b))
-		if err != nil {
-			return nil, err
-		}
-		
-		err = json.Unmarshal(bTradeByteA, &buyTrade)  //should be via data layer
+		buyTrade, err = t.tradeRep.getTradeByPosition(b)
 		if err != nil {
 			return nil, err
 		}
 		
 		for s := 1; s <= numberTrades; s++ {
-			sTradeByteA, err := t.stub.GetState(tradeIndex + strconv.Itoa(s))
+			sellTrade, err = t.tradeRep.getTradeByPosition(s)
 			if err != nil {
 				return nil, err
 			}
-			
-			err = json.Unmarshal(sTradeByteA, &sellTrade)  //should be via data layer
-			if err != nil {
-				return nil, err
-			}
-			
 			
 			//t.writeOut(sellTrade.Status + " " + ")
-			if sellTrade.Status == "Open" && buyTrade.Status == "Open" && sellTrade.TransType == "Ask" && buyTrade.TransType == "Bid" && sellTrade.SecurityID == buyTrade.SecurityID {
+			if sellTrade.Status == "Active" && buyTrade.Status == "Active" && sellTrade.TransType == "ask" && buyTrade.TransType == "bid" && sellTrade.SecurityID == buyTrade.SecurityID {
 				t.writeOut("in exchange: before executeTrade")
 				_, err := t.executeTrade(b, buyTrade, s, sellTrade)
 				

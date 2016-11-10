@@ -225,7 +225,7 @@ func (self *TradeRepository) newTrade(trade Trade) (int, error) {    //new trade
 	return index, nil
 }
 
-func (self *TradeRepository) getTradeByPostion(index int) (Trade, error) {
+func (self *TradeRepository) getTradeByPosition(index int) (Trade, error) {
 	var trade Trade
 	
 	err := self.chainArray.get(index, &trade)
@@ -236,6 +236,14 @@ func (self *TradeRepository) getTradeByPostion(index int) (Trade, error) {
 	return trade, nil
 }
 
+func (self *TradeRepository) getLastIndex() (int, error) {
+	lastIndex, err := self.chainArray.getLastIndex()
+	if err != nil {
+		return -1, err
+	}
+	
+	return lastIndex, nil
+}
 
 func (self *TradeRepository) updateTrade(index int, trade Trade) (string, error) {
 	key, err := self.chainArray.put(index, trade)
@@ -254,7 +262,7 @@ func (self *TradeRepository) updateTrade(index int, trade Trade) (string, error)
 type Trade struct {
 	UserID			string	`json:"userid"`
 	SecurityID		string	`json:"securityid"`
-	SecurityPointer	int	`json:"securitypointer"`
+	SecurityPointer	int		`json:"securitypointer"`
 	TransType		string	`json:"transtype"`
 	Price			float64	`json:"price"`
 	Units			int		`json:"units"`
