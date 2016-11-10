@@ -1,7 +1,7 @@
 package main
 
 import (
-//	"errors"
+	"errors"
 //	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
@@ -50,7 +50,8 @@ func (self *HoldingsRepository) getHolding(userID string, securityID string) (Ho
 	
 	holding, err := self.getHoldingByID(self.getHoldingID(userID, securityID))
 	if err != nil {
-		return holding, err
+		
+		return holding, errors.New("this is the error")
 	}
 	
 	return holding, nil

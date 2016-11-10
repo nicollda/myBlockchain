@@ -288,7 +288,7 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	
 	var buyUser		User
 	var sellUser	User
-	//var buyHolding	Holding
+	var buyHolding	Holding
 	//var sellHolding	Holding
 	var err			error
 	
@@ -308,13 +308,16 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	
 	sellUser.UserID = sellUser.UserID
 	
-	/*
+	
 	//get holdings
 	buyHolding, err = t.holdingsRep.getHolding(buyTrade.getUserID(), buyTrade.SecurityID) 
 	if err != nil {
 		return nil, err
 	}
 	
+	buyHolding.UserID = buyHolding.UserID
+	
+	/*
 	if sellTrade.UserID != "BANK" {
 		sellHolding, err = t.holdingsRep.getHolding(sellTrade.getUserID(), sellTrade.SecurityID) 
 		if err != nil {
