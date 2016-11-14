@@ -373,6 +373,9 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 		return nil, err
 	}
 	
+	t.writeOut("OriginKey: " + t.holdingsRep.LinkedList.originKey)
+	
+	/*
 	//Save changes to the holdings
 	_,err = t.holdingsRep.updateHolding(buyHolding)
 	if err != nil {
