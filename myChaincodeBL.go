@@ -226,6 +226,8 @@ func (t *SimpleChaincode) dividend(securityID string, amount int) ([]byte, error
 				return nil, err
 			}
 		}
+		
+		err = errors.New("Time to exit")
 	}
 	
 	
