@@ -70,7 +70,15 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 
 	//initialize our repositories
 	t.initObjects(stub)
-
+	
+	t.writeOut("in init")
+		/*
+	_, err = t.registerUser("Aaron")
+	if err != nil {
+		return nil, err
+	}
+	
+	/*
 	
 	//Register some users.  this would normally happen via the UI but we will do it here to simplify	
 	_, err := t.registerUser("BANK")
@@ -146,6 +154,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
+	*/
 	t.writeOut("Before return")
 	return nil, nil
 }
