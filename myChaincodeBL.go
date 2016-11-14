@@ -305,9 +305,6 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 		return nil, err
 	}
 	
-	buyUser.UserID = buyUser.UserID
-	
-	
 	sellUser, err = t.userRep.getUser(sellTrade.getUserID()) 
 	if err != nil {
 		return nil, err
@@ -319,8 +316,7 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	if err != nil {
 		return nil, errors.New("this is the error3")
 	}
-	
-	
+		
 	if buyHolding.UserID == "" {
 		//buyer does not already have a holding
 		buyHolding.init(buyUser.UserID, buyTrade.SecurityID, 0)
@@ -373,7 +369,7 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 		return nil, err
 	}
 	
-	t.writeOut("OriginKey: " + t.holdingsRep.LinkedList.originKey)
+	t.writeOut("OriginKey: " + t.holdingsRep.LinkedList.originKey + "        userID: " + buyHolding.UserID)
 	
 	
 	//Save changes to the holdings
@@ -381,6 +377,8 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	if err != nil {
 		return nil, err
 	}
+	
+	t.writeOut("OriginKey: " + t.holdingsRep.LinkedList.originKey + "        userID: " + buyHolding.UserID)
 	/*
 	if sellTrade.UserID != "BANK" {
 		_,err = t.holdingsRep.updateHolding(sellHolding)
