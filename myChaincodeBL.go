@@ -295,8 +295,8 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	
 	var buyUser		User
 	var sellUser	User
-	var buyHolding	Holding
-	var sellHolding	Holding
+	//var buyHolding	Holding
+	//var sellHolding	Holding
 	var err			error
 	
 	//get counterparties (need to change "user" to accounts or counterparties)
@@ -313,7 +313,8 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 		return nil, err
 	}
 	
-	
+	sellUser.UserID = buyUser.UserID
+	/*
 	//get holdings
 	buyHolding, err = t.holdingsRep.getHolding(buyTrade.getUserID(), buyTrade.SecurityID) 
 	if err != nil {
@@ -383,7 +384,7 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 			return nil, err
 		}
 	}
-	
+	*/
 	
 	t.writeOut("in execute trade: before return")
 	return nil, nil
