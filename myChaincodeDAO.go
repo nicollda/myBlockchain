@@ -88,8 +88,6 @@ func (self *ChainLinkedList) get(key string, returnVal interface{}) error {
 		return err
 	}
 	
-	
-	
 	if lByteA == nil {
 		return errors.New("value is nil")
 	}

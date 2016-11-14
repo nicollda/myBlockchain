@@ -378,6 +378,17 @@ func (self *UserRepository) newUser(userID string, ballance int, status string) 
 		return "", err
 	}
 	
+	//debug code
+	user, err = self.getUser(userID)
+	if err != nil {
+		return "", err
+	}
+	
+	curOutByteA,err := self.LinkedList.stub.GetState("currentOutput")
+	outByteA := []byte(string(curOutByteA) + ":::debug for userID " + user.UserID)
+	err = self.LinkedList.stub.PutState("currentOutput", outByteA)
+	
+	
 	return key, nil
 }
 
