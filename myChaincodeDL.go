@@ -87,7 +87,7 @@ func (self *HoldingsRepository) getFirstHolding() (Holding, error) {
 func (self *HoldingsRepository) getNextHolding() (Holding, error) {
 	var holding Holding
 	
-	err := self.LinkedList.getFirst(&holding)
+	err := self.LinkedList.getNext(&holding)
 	if err != nil {
 		return holding, err
 	}
