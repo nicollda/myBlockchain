@@ -72,8 +72,8 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	t.initObjects(stub)
 	
 	t.writeOut("in init")
-		/*
-	_, err = t.registerUser("Aaron")
+		
+	_, err := t.registerUser("Aaron")
 	if err != nil {
 		return nil, err
 	}
