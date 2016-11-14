@@ -377,7 +377,6 @@ t.writeOut("buyHolding.userID = " + buyUser.UserID)
 	
 	t.writeOut("OriginKey: " + t.holdingsRep.LinkedList.originKey + "        userID: " + buyHolding.UserID + buyHolding.SecurityID + strconv.Itoa(buyHolding.Units))
 	
-	/*
 	//Save changes to the holdings
 	_,err = t.holdingsRep.updateHolding(buyHolding)
 	if err != nil {
