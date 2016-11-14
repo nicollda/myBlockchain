@@ -155,7 +155,7 @@ func (self *ChainLinkedList) put(key string, val interface{}) (string, error) {
 			return "", err
 		}
 	} else {
-		err = self.stub.PutState(mKey, newNodeByteA)
+		err = self.stub.PutState("mKey", newNodeByteA)
 		if err != nil {
 			return "", err
 		}

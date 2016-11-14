@@ -88,7 +88,7 @@ func (t *SimpleChaincode) readOut() string {
 
 
 func (t *SimpleChaincode) securities() ([]byte, error) {
-	s := []string {"Jaime,Killed", "Jaime,Killer", "Jon,Killed", "Jon,Killer"}
+	s := []string {"JaimeKilled", "JaimeKiller", "JonKilled", "JonKiller"}
 	
 	sByteA, err := json.Marshal(s)
 	if err != nil {
