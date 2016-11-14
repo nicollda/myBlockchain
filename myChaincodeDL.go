@@ -236,10 +236,10 @@ type Security struct {
 
 
 
-func (self *Security) init(securityID string, description string) bool {
+func (self *Security) init(securityID string, description string, status string) bool {
 	self.SecurityID = securityID
 	self.Description = description
-	self.Status = "Active"	//should be in BL
+	self.Status = status
 	
 	return true
 }
@@ -329,16 +329,16 @@ type Trade struct {
 
 
 
-func (self *Trade) init(userID string, securityID string, securityPointer int, transType string, price float64, units int, expiry string) bool {
+func (self *Trade) init(userID string, securityID string, securityPointer int, transType string, price float64, units int, expiry string, status string, fulfilled int) bool {
 	self.UserID = userID
 	self.SecurityID = securityID
 	self.SecurityPointer = securityPointer
 	self.TransType = transType
 	self.Price = price
 	self.Units = units
-	self.Status = "Active"	//should be in BL
+	self.Status = status
 	self.Expiry = expiry
-	self.Fulfilled = 0		//should be in BL
+	self.Fulfilled = fulfilled
 	
 	return true
 }

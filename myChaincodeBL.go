@@ -163,7 +163,7 @@ func (t *SimpleChaincode) registerTrade(tradeType string, userID string, securit
 		return nil, errors.New("Security Not Found.")
 	}
 	
-	trade.init(userID, securityID, securityPointer, tradeType, price, units, expiry)
+	trade.init(userID, securityID, securityPointer, tradeType, price, units, expiry, "Active", 0)
 	
 	_, err = t.tradeRep.newTrade(trade)
 	if err != nil {
@@ -186,7 +186,7 @@ func (t *SimpleChaincode) registerSecurity(securityID string, desc string) ([]by
 	
 	var security Security
 	
-	security.init(securityID, desc)
+	security.init(securityID, desc, "Active")
 	_, err := t.securitiesRep.newSecurity(security)
 	if err != nil {
 		return nil, err
