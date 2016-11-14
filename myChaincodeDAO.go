@@ -126,8 +126,6 @@ func (self *ChainLinkedList) put(key string, val interface{}) (string, error) {
 		return "", err
 	}
 	
-	existingNodeByteA = existingNodeByteA
-	/*
 	if existingNodeByteA == nil {
 		//No, the data does is not already persisted
 		if self.originKey != "" {					//is our list empty? 
@@ -137,6 +135,7 @@ func (self *ChainLinkedList) put(key string, val interface{}) (string, error) {
 		self.originKey = mKey
 	}
 	
+	/*
 	newNodeByteA, err := json.Marshal(newNode) 
 	if err != nil {
 		return "", err
