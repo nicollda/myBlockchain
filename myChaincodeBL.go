@@ -208,7 +208,7 @@ func (t *SimpleChaincode) dividend(securityID string, amount int) ([]byte, error
 	holding, _ := t.holdingsRep.getFirstHolding()
 	t.writeOut("in dividend: user is " + holding.UserID)
 	
-	/*
+	
 	//For each holding
 	for holding, err := t.holdingsRep.getFirstHolding(); err==nil && holding.UserID != ""; holding, err = t.holdingsRep.getNextHolding(){
 		t.writeOut("in dividend Holding for loop")
@@ -221,14 +221,14 @@ func (t *SimpleChaincode) dividend(securityID string, amount int) ([]byte, error
 			}
 			
 			user.Ballance = user.Ballance + amount
-			_,err = t.userRep.updateUser(user)
+			//_,err = t.userRep.updateUser(user)
 			if err != nil {
 				return nil, err
 			}
 		}
 	}
 	
-	*/
+	
 	t.writeOut("in dividend: before return")
 	
 	return nil,nil
