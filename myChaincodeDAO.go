@@ -135,12 +135,14 @@ func (self *ChainLinkedList) put(key string, val interface{}) (string, error) {
 		self.originKey = mKey
 	}
 	
-	/*
+	
 	newNodeByteA, err := json.Marshal(newNode) 
 	if err != nil {
 		return "", err
 	}
 	
+	newNodeByteA = newNodeByteA
+	/*
 	err = self.stub.PutState(mKey, newNodeByteA)
 	if err != nil {
 		return "", err
