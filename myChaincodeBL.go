@@ -296,7 +296,7 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	var buyUser		User
 	var sellUser	User
 	var buyHolding	Holding
-	//var sellHolding	Holding
+	var sellHolding	Holding
 	var err			error
 	
 	//get counterparties (need to change "user" to accounts or counterparties)
@@ -327,7 +327,7 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 		//buyer does not already have a holding
 		buyHolding.init(buyUser.UserID, buyTrade.SecurityID, 0)
 	}
-/*
+
 
 	if sellTrade.UserID != "BANK" {
 		sellHolding, err = t.holdingsRep.getHolding(sellTrade.getUserID(), sellTrade.SecurityID) 
@@ -340,7 +340,7 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 			sellHolding.init(sellUser.UserID, sellTrade.SecurityID, 0)
 		}
 	}
-	
+/*	
 	//transfers funds and closes the trades
 	//no transaction rolling back etc...  dont know how best to handle
 	buyUser.Ballance = buyUser.Ballance - defaultPrice
