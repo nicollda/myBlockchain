@@ -97,20 +97,20 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	
 	
 	//register our securities and offer them for sale
-	_, err = t.registerSecurity("Jaime,Killed", "Jaime gets killed")
+	_, err = t.registerSecurity("JaimeKilled", "Jaime gets killed")
 	if err != nil {
 		return nil, err
 	}
-	_, err = t.registerSecurity("Jaime,Killer", "Jaime does the killing")
+	_, err = t.registerSecurity("JaimeKiller", "Jaime does the killing")
 	if err != nil {
 		return nil, err
 	}
 	
-	_, err = t.registerSecurity("Jon,Killed", "Jon gets killed")
+	_, err = t.registerSecurity("JonKilled", "Jon gets killed")
 	if err != nil {
 		return nil, err
 	}
-	_, err = t.registerSecurity("Jon,Killer", "Jon does the killing")
+	_, err = t.registerSecurity("JonKiller", "Jon does the killing")
 	if err != nil {
 		return nil, err
 	}
@@ -118,35 +118,35 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	
 	
 	//the bank does an IPO
-	_, err = t.registerTrade("ask", "BANK", "Jaime,Killed", defaultPrice, 100, "")
+	_, err = t.registerTrade("ask", "BANK", "JaimeKilled", defaultPrice, 100, "")
 	if err != nil {
 		return nil, err
 	}
 	
-	_, err = t.registerTrade("ask", "BANK", "Jaime,Killer", defaultPrice, 100, "")
+	_, err = t.registerTrade("ask", "BANK", "JaimeKiller", defaultPrice, 100, "")
 	if err != nil {
 		return nil, err
 	}
 	
-	_, err = t.registerTrade("ask", "BANK", "Jon,Killed", defaultPrice, 100, "")
+	_, err = t.registerTrade("ask", "BANK", "JonKilled", defaultPrice, 100, "")
 	if err != nil {
 		return nil, err
 	}
 	
-	_, err = t.registerTrade("ask", "BANK", "Jon,Killer", defaultPrice, 100, "")
+	_, err = t.registerTrade("ask", "BANK", "JonKiller", defaultPrice, 100, "")
 	if err != nil {
 		return nil, err
 	}
 	
 	
-	_, err = t.registerTrade("bid", "Aaron", "Jaime,Killed", defaultPrice, 100, "")
+	_, err = t.registerTrade("bid", "Aaron", "JaimeKilled", defaultPrice, 100, "")
 	if err != nil {
 		return nil, err
 	}
 	
 	t.writeOut("Before dividend")
 	//offer payoff anyone with Jaime,Killed (Aaron)
-	_, err = t.dividend("Jaime,Killed", 50)
+	_, err = t.dividend("JaimeKilled", 50)
 	if err != nil {
 		t.writeOut("in init: after dividend in err != nil")
 		return nil, err
