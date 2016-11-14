@@ -2,7 +2,7 @@ package main
 
 
 import (
-	"errors"
+//	"errors"
 	"fmt"
 	"strconv"
 	"encoding/json"
@@ -89,7 +89,7 @@ func (self *ChainLinkedList) get(key string, returnVal interface{}) error {
 	}
 	
 	if lByteA == nil {
-		return errors.New("value is nil")
+		return nil
 	}
 	
 	var llNode LinkedListNode
@@ -98,9 +98,6 @@ func (self *ChainLinkedList) get(key string, returnVal interface{}) error {
 		return err
 	}
 	
-	if llNode.Payload == nil {
-		return errors.New("payload is nil")
-	}
 	
 	err = json.Unmarshal(llNode.Payload, &returnVal)
 	if err != nil {
