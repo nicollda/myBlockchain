@@ -150,11 +150,18 @@ func (self *ChainLinkedList) put(key string, val interface{}) (string, error) {
 		
 		
 	if strings.Contains(mKey, "olding") !=true {   //debug.   
-	err = self.stub.PutState(mKey, newNodeByteA)
-	if err != nil {
-		return "", err
+		err = self.stub.PutState(mKey, newNodeByteA)
+		if err != nil {
+			return "", err
+		}
+	} else {
+		err = self.stub.PutState("mKey", newNodeByteA)
+		if err != nil {
+			return "", err
+		}
 	}
-	}
+	
+	
 	return mKey, nil
 }
 
