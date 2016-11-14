@@ -210,7 +210,7 @@ func (t *SimpleChaincode) dividend(securityID string, amount int) ([]byte, error
 	
 	
 	//For each holding
-	for holding, err := t.holdingsRep.getFirstHolding(); err==nil && holding.UserID != ""; holding, err = t.holdingsRep.getNextHolding(){
+	for holding, err := t.holdingsRep.getFirstHolding(); err==nil && holding.UserID != ""; { //holding, err = t.holdingsRep.getNextHolding(){
 		t.writeOut("in dividend Holding for loop")
 		if holding.SecurityID == securityID {
 				t.writeOut("in dividend- found matching userID.  need to pay out")
