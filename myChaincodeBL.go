@@ -356,12 +356,13 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	if err != nil {
 		return nil, err
 	}
-/*	
+
 	_,err = t.tradeRep.updateTrade(sellTradeIndex, sellTrade)
 	if err != nil {
 		return nil, err
 	}
-	
+
+/*	
 	//Saves the changes to the seller and buyer
 	_,err = t.userRep.updateUser(buyUser)
 	if err != nil {
