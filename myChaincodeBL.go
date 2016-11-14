@@ -144,7 +144,7 @@ func (t *SimpleChaincode) ballance(stub *shim.ChaincodeStub, userID string) ([]b
 
 
 //********************************************************************************************************
-//****                        Invoke function inplimentations                                         ****
+//****                        Invoke function implimentations                                         ****
 //********************************************************************************************************
 
 
@@ -321,15 +321,22 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 		return nil, errors.New("this is the error3")
 	}
 	
+	if buyHolding.UserID == "" {
+		//buyer does not already have a holding
+		buyHolding.init(buyUser.UserID, buyTrade.SecurityID, 0)
+	}
 
 	if sellTrade.UserID != "BANK" {
 		sellHolding, err = t.holdingsRep.getHolding(sellTrade.getUserID(), sellTrade.SecurityID) 
 		if err != nil {
 			return nil, err
 		}
+		
+		if sellHolding.UserID == "" {  //should not have to check if the seller has the holding but we have not implimented that level of checks yet
+			//sell does not already have a holding
+			sellHolding.init(sellUser.UserID, sellTrade.SecurityID, 0)
+		}
 	}
-	
-	
 	
 	//transfers funds and closes the trades
 	//no transaction rolling back etc...  dont know how best to handle
