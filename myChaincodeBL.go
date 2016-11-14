@@ -340,7 +340,7 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 			sellHolding.init(sellUser.UserID, sellTrade.SecurityID, 0)
 		}
 	}
-/*	
+
 	//transfers funds and closes the trades
 	//no transaction rolling back etc...  dont know how best to handle
 	buyUser.Ballance = buyUser.Ballance - defaultPrice
@@ -352,7 +352,7 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	if sellTrade.UserID != "BANK" {
 		sellHolding.Units = sellHolding.Units - buyTrade.Units
 	}
-	
+/*	
 	//Saves the changes to the trades
 	_,err = t.tradeRep.updateTrade(buyTradeIndex, buyTrade)
 	if err != nil {
