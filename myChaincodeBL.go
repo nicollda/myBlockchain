@@ -372,13 +372,13 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	if err != nil {
 		return nil, err
 	}
-	/*
+	
 	//Save changes to the holdings
 	_,err = t.holdingsRep.updateHolding(buyHolding)
 	if err != nil {
 		return nil, err
 	}
-	
+	/*
 	if sellTrade.UserID != "BANK" {
 		_,err = t.holdingsRep.updateHolding(sellHolding)
 		if err != nil {
