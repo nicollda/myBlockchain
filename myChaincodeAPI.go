@@ -73,12 +73,6 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	
 	t.writeOut("in init")
 		
-	_, err := t.registerUser("Aaron")
-	if err != nil {
-		return nil, err
-	}
-	
-	/*
 	
 	//Register some users.  this would normally happen via the UI but we will do it here to simplify	
 	_, err := t.registerUser("BANK")
@@ -101,6 +95,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
+	/*
 	//register our securities and offer them for sale
 	_, err = t.registerSecurity("Jaime,Killed", "Jaime gets killed")
 	if err != nil {
