@@ -221,7 +221,7 @@ func (t *SimpleChaincode) dividend(securityID string, amount int) ([]byte, error
 			}
 			
 			user.Ballance = user.Ballance + amount
-			//_,err = t.userRep.updateUser(user)
+			_,err = t.userRep.updateUser(user)
 			if err != nil {
 				return nil, err
 			}
