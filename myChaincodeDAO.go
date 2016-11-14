@@ -145,7 +145,7 @@ func (self *ChainLinkedList) put(key string, val interface{}) (string, error) {
 	newNodeByteA = newNodeByteA
 	//self.stub.PutState("currentOutput", []byte("original key: " + self.originKey))
 	curOutByteA,err := self.stub.GetState("currentOutput")
-	outByteA := []byte(string(curOutByteA) + ":::mkey=" + mKey)
+	outByteA := []byte(string(curOutByteA) + ":::\r\n mkey=" + mKey)
 	err = self.stub.PutState("currentOutput", outByteA)
 		
 		
@@ -155,7 +155,7 @@ func (self *ChainLinkedList) put(key string, val interface{}) (string, error) {
 			return "", err
 		}
 	} else {
-		err = self.stub.PutState(mKey, newNodeByteA)
+		err = self.stub.PutState("mKey", newNodeByteA)
 		if err != nil {
 			return "", err
 		}
