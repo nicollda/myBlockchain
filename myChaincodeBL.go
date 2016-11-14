@@ -44,6 +44,28 @@ const payout =			5
 const defaultPrice =	5
 
 
+type ChaincodeBusinessLayer struct {
+	userRep			UserRepository 
+	holdingsRep		HoldingsRepository
+	securitiesRep	SecurityRepository
+	tradeRep		TradeRepository
+	stub			*shim.ChaincodeStub
+}
+
+func (t *ChaincodeBusinessLayer) initObjects(stub *shim.ChaincodeStub) error {
+	t.stub = stub
+	t.writeOut("in init objects")
+	
+	
+	//initialize our repositories
+	t.userRep.init(stub)
+	t.holdingsRep.init(stub)
+	t.securitiesRep.init(stub)
+	t.tradeRep.init(stub)
+	
+	return nil
+}
+
 //********************************************************************************************************
 //****                        Debug function inplimentations                                          ****
 //********************************************************************************************************
@@ -52,7 +74,7 @@ const defaultPrice =	5
 const debug =			true
 
 
-func (t *SimpleChaincode) writeOut(out string) ([]byte, error) {
+func (t *ChaincodeBusinessLayer) writeOut(out string) ([]byte, error) {
 	if debug {
 		curOutByteA,err := t.stub.GetState("currentOutput")
 		outByteA := []byte(string(curOutByteA) + ":::" + out)
@@ -65,7 +87,7 @@ func (t *SimpleChaincode) writeOut(out string) ([]byte, error) {
 
 
 
-func (t *SimpleChaincode) readOut() string {
+func (t *ChaincodeBusinessLayer) readOut() string {
 	if debug {
 		curOutByteA, err := t.stub.GetState("currentOutput")
 		if err != nil {
@@ -87,7 +109,7 @@ func (t *SimpleChaincode) readOut() string {
 
 
 
-func (t *SimpleChaincode) securities() ([]byte, error) {
+func (t *ChaincodeBusinessLayer) securities() ([]byte, error) {
 	s := []string {"JaimeKilled", "JaimeKiller", "JonKilled", "JonKiller"}
 	
 	sByteA, err := json.Marshal(s)
@@ -100,7 +122,7 @@ func (t *SimpleChaincode) securities() ([]byte, error) {
 
 
 
-func (t *SimpleChaincode) users() ([]byte, error) {
+func (t *ChaincodeBusinessLayer) users() ([]byte, error) {
 	u := []string {"David", "Aaron", "Wesley"}
 	
 	uByteA, err := json.Marshal(u)
@@ -113,7 +135,7 @@ func (t *SimpleChaincode) users() ([]byte, error) {
 
 
 
-func (t *SimpleChaincode) holdings(userID string) ([]byte, error) {
+func (t *ChaincodeBusinessLayer) holdings(userID string) ([]byte, error) {
 	fmt.Printf("Running holdings")
 	
 	// this was supposed to be holding not ballance.  needs to be rewritten
@@ -128,7 +150,7 @@ func (t *SimpleChaincode) holdings(userID string) ([]byte, error) {
 
 
 
-func (t *SimpleChaincode) ballance(stub *shim.ChaincodeStub, userID string) ([]byte, error) {
+func (t *ChaincodeBusinessLayer) ballance(stub *shim.ChaincodeStub, userID string) ([]byte, error) {
 	fmt.Printf("Running ballance")
 	
 	user, err := t.userRep.getUser(userID)
@@ -148,7 +170,7 @@ func (t *SimpleChaincode) ballance(stub *shim.ChaincodeStub, userID string) ([]b
 
 
 // initial public offering for a square
-func (t *SimpleChaincode) registerTrade(tradeType string, userID string, securityID string, price float64, units int, expiry string) ([]byte, error) {
+func (t *ChaincodeBusinessLayer) registerTrade(tradeType string, userID string, securityID string, price float64, units int, expiry string) ([]byte, error) {
 	fmt.Printf("Running registerTrade")
 	
 	var trade Trade
@@ -181,7 +203,7 @@ func (t *SimpleChaincode) registerTrade(tradeType string, userID string, securit
 
 
 // initial public offering for a square
-func (t *SimpleChaincode) registerSecurity(securityID string, desc string) ([]byte, error) {
+func (t *ChaincodeBusinessLayer) registerSecurity(securityID string, desc string) ([]byte, error) {
 	fmt.Printf("Running registerSecurity")
 	
 	var security Security
@@ -199,7 +221,7 @@ func (t *SimpleChaincode) registerSecurity(securityID string, desc string) ([]by
 
 // called by the moderator watson?  to specify that an event happened pay it out
 //todo: need to make dividends payout for each share not just once if there are holdings
-func (t *SimpleChaincode) dividend(securityID string, amount int) ([]byte, error) {
+func (t *ChaincodeBusinessLayer) dividend(securityID string, amount int) ([]byte, error) {
 
 	fmt.Printf("Running dividend")
 	t.writeOut("in dividend")
@@ -243,7 +265,7 @@ func (t *SimpleChaincode) dividend(securityID string, amount int) ([]byte, error
 //		ignore expiry
 //		ignore if the counterparties have the security
 //		or if user is active
-func (t *SimpleChaincode) exchange() ([]byte, error) {
+func (t *ChaincodeBusinessLayer) exchange() ([]byte, error) {
 	fmt.Printf("Running exchange")
 	t.writeOut("in exchange")
 	
@@ -294,7 +316,7 @@ func (t *SimpleChaincode) exchange() ([]byte, error) {
 	//doesnt check holdings
 	//or users are valid
 	//or expiry date etc...
-func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTradeIndex int, sellTrade Trade) ([]byte, error) {
+func (t *ChaincodeBusinessLayer) executeTrade(buyTradeIndex int, buyTrade Trade, sellTradeIndex int, sellTrade Trade) ([]byte, error) {
 	fmt.Printf("Running exchange")
 	
 	var buyUser		User
@@ -404,7 +426,7 @@ t.writeOut("buyHolding.userID = " + buyUser.UserID)
 
 
 // register user
-func (t *SimpleChaincode) registerUser(userID string) ([]byte, error) {
+func (t *ChaincodeBusinessLayer) registerUser(userID string) ([]byte, error) {
 	fmt.Printf("Running registerUser")
 	//need to make sure the user is not already registered
 	newCash := initialCash
@@ -424,7 +446,7 @@ func (t *SimpleChaincode) registerUser(userID string) ([]byte, error) {
 
 
 //   curently not used but should be used in place of taking the user id via the interface.  user id should come from the security model
-func (t *SimpleChaincode) getUserID(args []string) ([]byte, error) {
+func (t *ChaincodeBusinessLayer) getUserID(args []string) ([]byte, error) {
 	//returns the user's ID 
 	
 	return nil, nil  //dont know how to get the current user
