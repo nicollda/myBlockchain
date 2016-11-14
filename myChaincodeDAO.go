@@ -4,7 +4,7 @@ package main
 import (
 //	"errors"
 	"fmt"
-	"strings"
+//	"strings"
 	"strconv"
 	"encoding/json"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -142,26 +142,10 @@ func (self *ChainLinkedList) put(key string, val interface{}) (string, error) {
 		return "", err
 	}
 	
-	newNodeByteA = newNodeByteA
-	//self.stub.PutState("currentOutput", []byte("original key: " + self.originKey))
-	curOutByteA,err := self.stub.GetState("currentOutput")
-	outByteA := []byte(string(curOutByteA) + ":::\r\n mkey=" + mKey)
-	err = self.stub.PutState("currentOutput", outByteA)
-		
-		
-	if strings.Contains(mKey, "olding") !=true {   //debug.   
-		err = self.stub.PutState(mKey, newNodeByteA)
-		if err != nil {
-			return "", err
-		}
-	} else {
-		err = self.stub.PutState("HoldingIndexzzzzAaronJaimeKilled", newNodeByteA)  //HoldingIndexzzzzAaronJaimeKilled
-		//err = self.stub.PutState("myKey", newNodeByteA)
-		if err != nil {
-			return "", err
-		}
+	err = self.stub.PutState(mKey, newNodeByteA)
+	if err != nil {
+		return "", err
 	}
-	
 	
 	return mKey, nil
 }

@@ -202,12 +202,13 @@ func (t *SimpleChaincode) registerSecurity(securityID string, desc string) ([]by
 // called by the moderator watson?  to specify that an event happened pay it out
 //todo: need to make dividends payout for each share not just once if there are holdings
 func (t *SimpleChaincode) dividend(securityID string, amount int) ([]byte, error) {
-/*
+
 	fmt.Printf("Running dividend")
 	t.writeOut("in dividend")
 	holding, _ := t.holdingsRep.getFirstHolding()
 	t.writeOut("in dividend: user is " + holding.UserID)
 	
+	/*
 	//For each holding
 	for holding, err := t.holdingsRep.getFirstHolding(); err==nil && holding.UserID != ""; holding, err = t.holdingsRep.getNextHolding(){
 		t.writeOut("in dividend Holding for loop")
