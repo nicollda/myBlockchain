@@ -205,7 +205,7 @@ func (t *SimpleChaincode) dividend(securityID string, amount int) ([]byte, error
 	t.writeOut("in dividend")
 	
 	//For each holding
-	for holding, err := t.holdingsRep.getFirstHolding(); err==nil; holding, err = t.holdingsRep.getNextHolding(){
+	for holding, err := t.holdingsRep.getFirstHolding(); err==nil && holding.UserID != ""; holding, err = t.holdingsRep.getNextHolding(){
 		if holding.SecurityID == securityID {
 			//payout user
 			user, err := t.userRep.getUser(holding.UserID)
