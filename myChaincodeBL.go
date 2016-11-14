@@ -323,11 +323,11 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	
 	buyHolding.UserID = buyHolding.UserID
 	
-	/*
 	if buyHolding.UserID == "" {
 		//buyer does not already have a holding
 		buyHolding.init(buyUser.UserID, buyTrade.SecurityID, 0)
 	}
+/*
 
 	if sellTrade.UserID != "BANK" {
 		sellHolding, err = t.holdingsRep.getHolding(sellTrade.getUserID(), sellTrade.SecurityID) 
