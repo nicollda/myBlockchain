@@ -300,13 +300,16 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	var err			error
 	
 	
-	t.writeOut("buyTrade.userID = " + buyTrade.UserID)
+	t.writeOut("buyTrade.userID = " + buyTrade.getUserID())
 	
 	//get counterparties (need to change "user" to accounts or counterparties)
 	buyUser, err = t.userRep.getUser(buyTrade.getUserID()) 
 	if err != nil {
 		return nil, err
 	}
+	
+	t.writeOut("buyUser.UserID = " + buyUser.UserID)
+
 	
 	sellUser, err = t.userRep.getUser(sellTrade.getUserID()) 
 	if err != nil {
