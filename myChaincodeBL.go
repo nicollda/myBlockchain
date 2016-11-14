@@ -131,14 +131,14 @@ func (t *SimpleChaincode) holdings(userID string) ([]byte, error) {
 func (t *SimpleChaincode) ballance(stub *shim.ChaincodeStub, userID string) ([]byte, error) {
 	fmt.Printf("Running ballance")
 	
-
+/*
 	user, err := t.userRep.getUser(userID)
 	if err != nil {
 		return nil, err
 	}
-
-	return []byte("Ballance: " + strconv.Itoa(user.getBallance()) + "............." + t.readOut()), nil
-	//return []byte(t.readOut()), nil
+*/
+	//return []byte("Ballance: " + strconv.Itoa(user.getBallance()) + "............." + t.readOut()), nil
+	return []byte(t.readOut()), nil
 }
 
 
@@ -313,7 +313,6 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 		return nil, err
 	}
 	
-
 	
 	//get holdings
 	buyHolding, err = t.holdingsRep.getHolding(buyTrade.getUserID(), buyTrade.SecurityID) 
@@ -386,7 +385,7 @@ func (t *SimpleChaincode) executeTrade(buyTradeIndex int, buyTrade Trade, sellTr
 	}
 	
 	
-	t.writeOut("in exexcute trade: before return")
+	t.writeOut("in execute trade: before return")
 	return nil, nil
 }
 
