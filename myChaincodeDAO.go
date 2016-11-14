@@ -36,7 +36,6 @@ type ChainLinkedList struct {
 func (self *ChainLinkedList) init(stub *shim.ChaincodeStub, mapName string) bool {
 	self.stub = stub
 	self.mapName = mapName
-	self.originKey = ""
 	
 	return true
 }
@@ -127,7 +126,6 @@ func (self *ChainLinkedList) put(key string, val interface{}) (string, error) {
 		return "", err
 	}
 	
-
 	if existingNodeByteA == nil {
 		//No, the data does is not already persisted
 		if self.originKey != "" {					//is our list empty? 
