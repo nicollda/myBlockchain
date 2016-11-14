@@ -34,7 +34,7 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
-const separator = 		"::::"
+const separator = 		"zzzz"
 const userIndex =		"UserIndex" + separator
 const tradeIndex =		"TradeIndex" + separator
 const securityIndex = 	"SecurityIndex" + separator
