@@ -138,12 +138,12 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, err
 	}
 	
-	/*
+	
 	_, err = t.registerTrade("bid", "Aaron", "Jaime,Killed", defaultPrice, 100, "")
 	if err != nil {
 		return nil, err
 	}
-	
+	/*
 	t.writeOut("Before dividend")
 	//offer payoff anyone with Jaime,Killed (Aaron)
 	_, err = t.dividend("Jaime,Killed", 50)
