@@ -222,6 +222,16 @@ func (self *SecurityRepository) updateSecurity(index int, security Security) (st
 }
 
 
+func (self *SecurityRepository) getLastIndex() (int, error) {
+	lastIndex, err := self.chainArray.getLastIndex()
+	if err != nil {
+		return -1, err
+	}
+	
+	return lastIndex, nil
+}
+
+
 
 //********************************
 //         Security

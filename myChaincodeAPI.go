@@ -16,7 +16,7 @@ under the License.
 */
 
 
-//todo:  need to make consitent status.  need better way to take them out of the process when closed
+//todo:  need to make consitent status.  need better way to take them out of the process when closed.  maybe use an enum
 //todo: add application security to get user names
 //todo:  make user into account
 
@@ -49,13 +49,11 @@ type SimpleChaincode struct {
 //Init the blockchain.  populate a 2x2 grid of potential events for users to buy
 func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Printf("Init called, initializing chaincode")
-
-
+	
 	//initialize our repositories
 	t.bl.initObjects(stub)
 	
 	t.bl.writeOut("in init")
-		
 	
 	//Register some users.  this would normally happen via the UI but we will do it here to simplify
 	_, err := t.bl.registerUser("BANK")

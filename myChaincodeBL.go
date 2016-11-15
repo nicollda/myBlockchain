@@ -37,7 +37,7 @@ import (
 const separator = 		"zzzz"
 const userIndex =		"UserIndex" + separator
 const tradeIndex =		"TradeIndex" + separator
-const securityIndex = 	"SecurityIndex" + separator
+const securityIndex =	"SecurityIndex" + separator
 const holdingIndex =	"HoldingIndex" + separator
 const initialCash =		1000
 const payout =			5
@@ -108,16 +108,39 @@ func (t *ChaincodeBusinessLayer) readOut() string {
 //********************************************************************************************************
 
 
-
+//to do.  actually return the regersitered entities not the hard coded ones
 func (t *ChaincodeBusinessLayer) securities() ([]byte, error) {
-	s := []string {"JaimeKilled", "JaimeKiller", "JonKilled", "JonKiller"}
+	//s := []string {"JaimeKilled", "JaimeKiller", "JonKilled", "JonKiller"}
 	
-	sByteA, err := json.Marshal(s)
+	var sec Security
+	var out string
+	
+	numberSecurities, err := t.securitiesRep.getLastIndex()
 	if err != nil {
 		return nil, err
 	}
 	
-	return sByteA, nil
+	for b := 1; b <= numberSecurities; b++{
+		sec, err = t.securitiesRep.getSecurityByPostion(b)
+		if err != nil {
+			return nil, err
+		}
+		
+		if out == "" {
+			out = sec.SecurityID
+		} else {
+			out = out + ", " + sec.SecurityID
+		}
+	}
+	
+	/*
+	sByteA, err := json.Marshal(s)
+	if err != nil {
+		return nil, err
+	}
+	*/
+	
+	return []byte(out), nil
 }
 
 
