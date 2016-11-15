@@ -118,23 +118,20 @@ func (t *ChaincodeBusinessLayer) securities() ([]byte, error) {
 		return nil, err
 	}
 	
-	out = "["
-	
 	for b := 1; b <= numberSecurities; b++{
 		sec, err = t.securitiesRep.getSecurityByPostion(b)
 		if err != nil {
 			return nil, err
 		}
 		
-		if out == "[" {
-			out = "[\"" + sec.SecurityID + "\""
+		if out == "" {
+			out = "\"" + sec.SecurityID + "\""
 		} else {
 			out = out + ",\"" + sec.SecurityID + "\""
 		}
 	}
 	
-	out = out + "]"
-	return []byte(out), nil
+	return []byte("[" + out + "]"), nil
 }
 
 
