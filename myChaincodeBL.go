@@ -30,7 +30,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
-//	"encoding/json"
+	"encoding/json"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
@@ -154,15 +154,18 @@ func (t *ChaincodeBusinessLayer) users() ([]byte, error) {
 
 func (t *ChaincodeBusinessLayer) holdings(userID string) ([]byte, error) {
 	fmt.Printf("Running holdings")
+	var out []Holding
+	var index int
 	
-	// this was supposed to be holding not ballance.  needs to be rewritten
-	
-	user, err := t.userRep.getUser(userID)
-	if err != nil {
-		return nil, err
+	index = 0 
+	for holding, err := t.holdingsRep.getFirstHolding(); err==nil && holding.UserID != ""; holding, err = t.holdingsRep.getNextHolding(){
+		if holding.UserID == userID {
+			out[index] = holding
+			index++
+		}
 	}
 	
-	return []byte(strconv.Itoa(user.getBallance())), nil
+	return json.Marshal(out)
 }
 
 
