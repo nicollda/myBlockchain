@@ -126,7 +126,7 @@ func (t *ChaincodeBusinessLayer) securities() ([]byte, error) {
 		}
 		
 		if out == "[" {
-			out = "[\\\"" + sec.SecurityID
+			out = "[\"" + sec.SecurityID
 		} else {
 			out = out + ", " + sec.SecurityID
 		}
