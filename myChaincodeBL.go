@@ -110,8 +110,6 @@ func (t *ChaincodeBusinessLayer) readOut() string {
 
 //to do.  actually return the regersitered entities not the hard coded ones
 func (t *ChaincodeBusinessLayer) securities() ([]byte, error) {
-	//s := []string {"JaimeKilled", "JaimeKiller", "JonKilled", "JonKiller"}
-	
 	var sec Security
 	var out string
 	
@@ -120,25 +118,19 @@ func (t *ChaincodeBusinessLayer) securities() ([]byte, error) {
 		return nil, err
 	}
 	
+	out = "["
 	for b := 1; b <= numberSecurities; b++{
 		sec, err = t.securitiesRep.getSecurityByPostion(b)
 		if err != nil {
 			return nil, err
 		}
 		
-		if out == "" {
-			out = sec.SecurityID
+		if out == "[" {
+			out = "[\\\"" + sec.SecurityID
 		} else {
 			out = out + ", " + sec.SecurityID
 		}
 	}
-	
-	/*
-	sByteA, err := json.Marshal(s)
-	if err != nil {
-		return nil, err
-	}
-	*/
 	
 	return []byte(out), nil
 }
