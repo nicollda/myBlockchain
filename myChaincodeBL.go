@@ -119,6 +119,7 @@ func (t *ChaincodeBusinessLayer) securities() ([]byte, error) {
 	}
 	
 	out = "["
+	
 	for b := 1; b <= numberSecurities; b++{
 		sec, err = t.securitiesRep.getSecurityByPostion(b)
 		if err != nil {
