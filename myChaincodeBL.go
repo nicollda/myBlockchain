@@ -30,7 +30,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
-	"encoding/json"
+//	"encoding/json"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
@@ -137,14 +137,17 @@ func (t *ChaincodeBusinessLayer) securities() ([]byte, error) {
 
 
 func (t *ChaincodeBusinessLayer) users() ([]byte, error) {
-	u := []string {"David", "Aaron", "Wesley"}
-	
-	uByteA, err := json.Marshal(u)
-	if err != nil {
-		return nil, err
+	var out string
+
+	for user, err := t.userRep.getFirstUser(); err==nil && user.UserID != ""; user, err = t.userRep.getNextUser(){
+		if out == "" {
+			out = "\"" + user.UserID + "\""
+		} else {
+			out = out + ",\"" + user.UserID + "\""
+		}
 	}
 	
-	return uByteA, nil
+	return []byte("[" + out + "]"), nil
 }
 
 

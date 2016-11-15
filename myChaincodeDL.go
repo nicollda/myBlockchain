@@ -404,6 +404,24 @@ func (self *UserRepository) newUser(userID string, ballance int, status string) 
 
 
 
+func (self *UserRepository) getFirstUser() (User, error) {
+	var user User
+	
+	err := self.LinkedList.getFirst(&user)
+	return user, err
+}
+
+
+
+func (self *UserRepository) getNextUser() (User, error) {
+	var user User
+	
+	err := self.LinkedList.getNext(&user)
+	return user, err
+}
+
+
+
 func (self *UserRepository) getUser(userId string) (User, error) {
 	var user User
 	
