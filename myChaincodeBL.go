@@ -154,15 +154,15 @@ func (t *ChaincodeBusinessLayer) users() ([]byte, error) {
 
 func (t *ChaincodeBusinessLayer) holdings(userID string) ([]byte, error) {
 	fmt.Printf("Running holdings")
-	//var out []Holding
+	var out []Holding
 	var index int
 	
-	var out Holding
+	//var out Holding
 	index = 0 
 	for holding, err := t.holdingsRep.getFirstHolding(); err==nil && holding.UserID != ""; holding, err = t.holdingsRep.getNextHolding(){
 		if holding.UserID == userID {
-			//out[index] = holding
-			out = holding
+			out[index] = holding
+			//out = holding
 			index++
 		}
 	}
