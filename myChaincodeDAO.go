@@ -134,6 +134,15 @@ func (self *ChainLinkedList) put(key string, val interface{}) (string, error) {
 		}
 		
 		self.originKey = mKey
+	} else {
+		var existingNode LinkedListNode
+		
+		err := json.Unmarshal(existingNodeByteA, &existingNode)
+		if err != nil {
+			return "", err
+		}
+		
+		newNode.NextNode = existingNode.NextNode
 	}
 	
 	
