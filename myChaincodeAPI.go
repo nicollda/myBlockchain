@@ -56,11 +56,13 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	
 	t.bl.writeOut("in init")
 	
+	// test of undocumented functions
 	err := stub.CreateTable("AssetsOwnership", []*shim.ColumnDefinition{ 
 		&shim.ColumnDefinition{Name: "Asset", Type: shim.ColumnDefinition_STRING, Key: true}, 
 		&shim.ColumnDefinition{Name: "Owner", Type: shim.ColumnDefinition_BYTES, Key: false}, 
 	}) 
-
+	adminCert, err := stub.GetCallerMetadata()
+	adminCert = adminCert
 	
 	//Register some users.  this would normally happen via the UI but we will do it here to simplify
 	_, err = t.bl.registerUser("BANK")
