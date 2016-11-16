@@ -1,7 +1,7 @@
 package main
 
 import (
-	"errors"
+//	"errors"
 //	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
@@ -17,15 +17,15 @@ type HoldingsRepository struct {
 
 
 func (self *HoldingsRepository) init(stub *shim.ChaincodeStub) bool {
-	self.LinkedList.init(stub, holdingIndex)
 	
-	return true
+	return self.LinkedList.init(stub, holdingIndex)
 }
 
 
 
 func (self *HoldingsRepository) getHoldingID(userID string, securityID string) string {
-	return userID + securityID
+	
+	return userID + separator + securityID
 }
 
 
@@ -35,25 +35,14 @@ func (self *HoldingsRepository) newHolding(userID string, securityID string, uni
 	var holding Holding
 	holding.init(userID, securityID, units)
 	
-	key, err := self.LinkedList.put(self.getHoldingID(userID, securityID), holding)
-	if err != nil {
-		return "", err
-	}
-	
-	return key, nil
+	return self.LinkedList.put(self.getHoldingID(userID, securityID), holding)
 }
 
 
 
 func (self *HoldingsRepository) getHolding(userID string, securityID string) (Holding, error) {
-	var holding Holding
 	
-	holding, err := self.getHoldingByID(self.getHoldingID(userID, securityID))
-	if err != nil {
-		return holding, errors.New("this is the error")
-	}
-	
-	return holding, nil
+	return self.getHoldingByID(self.getHoldingID(userID, securityID))
 }
 
 
@@ -62,11 +51,8 @@ func (self *HoldingsRepository) getHoldingByID(holdingID string) (Holding, error
 	var holding Holding
 	
 	err := self.LinkedList.get(holdingID, &holding)
-	if err != nil {
-		return holding, errors.New("this is the error2")
-	}
 	
-	return holding, nil
+	return holding, err
 }
 
 
@@ -90,23 +76,15 @@ func (self *HoldingsRepository) getNextHolding() (Holding, error) {
 
 
 func (self *HoldingsRepository) updateHolding(holding Holding) (string, error) {
-	key, err := self.LinkedList.put(self.getHoldingID(holding.UserID, holding.SecurityID), holding)
-	if err != nil {
-		return "", err
-	}
 	
-	return key, nil
+	return self.LinkedList.put(self.getHoldingID(holding.UserID, holding.SecurityID), holding)
 }
 
 
 
 func (self *HoldingsRepository) deleteHolding(userID string, securityID string,) error {
-	err := self.LinkedList.del(self.getHoldingID(userID, securityID))
-	if err != nil {
-		return err
-	}
-	
-	return nil
+
+	return self.LinkedList.del(self.getHoldingID(userID, securityID))
 }
 
 
@@ -151,9 +129,8 @@ func (self *Holding) updateUnits(units int) bool {
 
 
 func (self *SecurityRepository) init(stub *shim.ChaincodeStub) bool {
-	self.chainArray.init(stub, securityIndex)
 	
-	return true
+	return self.chainArray.init(stub, securityIndex)
 }
 
 
@@ -195,22 +172,15 @@ func (self *SecurityRepository) getSecurityByPostion(index int) (Security, error
 	var security Security
 	
 	err := self.chainArray.get(index, &security)
-	if err != nil {
-		return security, err
-	}
 	
-	return security, nil
+	return security, err
 }
 
 
 
 func (self *SecurityRepository) updateSecurity(index int, security Security) (string, error) {
-	key, err := self.chainArray.put(index, security)
-	if err != nil {
-		return "", err
-	}
 	
-	return key, nil
+	return self.chainArray.put(index, security)
 }
 
 
@@ -260,9 +230,8 @@ type TradeRepository struct {
 
 
 func (self *TradeRepository) init(stub *shim.ChaincodeStub) bool {
-	self.chainArray.init(stub, tradeIndex)
 	
-	return true
+	return self.chainArray.init(stub, tradeIndex)
 }
 
 
@@ -281,11 +250,8 @@ func (self *TradeRepository) getTradeByPosition(index int) (Trade, error) {
 	var trade Trade
 	
 	err := self.chainArray.get(index, &trade)
-	if err != nil {
-		return trade, err
-	}
 	
-	return trade, nil
+	return trade, err
 }
 
 
@@ -302,12 +268,8 @@ func (self *TradeRepository) getLastIndex() (int, error) {
 
 
 func (self *TradeRepository) updateTrade(index int, trade Trade) (string, error) {
-	key, err := self.chainArray.put(index, trade)
-	if err != nil {
-		return "", err
-	}
 	
-	return key, nil
+	return self.chainArray.put(index, trade)
 }
 
 
@@ -364,8 +326,8 @@ type UserRepository struct {
 
 
 func (self *UserRepository) init(stub *shim.ChaincodeStub) bool {
-	self.LinkedList.init(stub, userIndex)
-	return true
+	
+	return self.LinkedList.init(stub, userIndex)
 }
 
 
@@ -418,33 +380,21 @@ func (self *UserRepository) getUser(userId string) (User, error) {
 	var user User
 	
 	err := self.LinkedList.get(userId, &user)
-	if err != nil {
-		return user, err
-	}
-	
-	return user, nil
+	return user, err
 }
 
 
 
 func (self *UserRepository) updateUser(user User) (string, error) {
-	key, err := self.LinkedList.put(user.UserID, user)
-	if err != nil {
-		return "", err
-	}
-	
-	return key, nil
+
+	return self.LinkedList.put(user.UserID, user)
 }
 
 
 
 func (self *UserRepository) deleteUser(userID string) error {
-	err :=  self.LinkedList.del(userID)
-	if err != nil {
-		return err
-	}
 	
-	return nil
+	return self.LinkedList.del(userID)
 }
 
 

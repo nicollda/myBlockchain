@@ -43,18 +43,15 @@ func (self *ChainLinkedList) init(stub *shim.ChaincodeStub, mapName string) bool
 
 
 func (self *ChainLinkedList) getKey(key string) string {
-	return self.mapName + key
+	return self.mapName + separator + key
 }
+
 
 
 func (self *ChainLinkedList) getFirst(returnVal interface{}) error {
 	self.nextNode = self.originKey
-	err := self.getNext(&returnVal)
-	if err != nil {
-		return err
-	}
 	
-	return nil
+	return self.getNext(&returnVal)
 }
 
 
@@ -73,12 +70,7 @@ func (self *ChainLinkedList) getNext(returnVal interface{}) error {
 	
 	self.nextNode = llNode.NextNode
 	
-	err = json.Unmarshal(llNode.Payload, &returnVal)
-	if err != nil {
-		return err
-	}
-	
-	return nil
+	return json.Unmarshal(llNode.Payload, &returnVal)
 }
 
 
@@ -98,13 +90,7 @@ func (self *ChainLinkedList) get(key string, returnVal interface{}) error {
 		return err
 	}
 	
-	
-	err = json.Unmarshal(llNode.Payload, &returnVal)
-	if err != nil {
-		return err
-	}
-	
-	return nil
+	return json.Unmarshal(llNode.Payload, &returnVal)
 }
 
 
@@ -239,7 +225,7 @@ func (self *ChainArray) init(stub *shim.ChaincodeStub, arrayName string) bool {
 
 
 func (self *ChainArray) getKey(key int) string {
-	return self.ArrayName + strconv.Itoa(key)
+	return self.ArrayName + separator + strconv.Itoa(key)
 }
 
 
@@ -249,12 +235,7 @@ func (self *ChainArray) get(index int, returnVal interface{}) error {
 		return err
 	}
 	
-	err = json.Unmarshal(vByteA, &returnVal)
-	if err != nil {
-		return err
-	}
-	
-	return nil
+	return json.Unmarshal(vByteA, &returnVal)
 }
 
 
@@ -284,7 +265,7 @@ func (self *ChainArray) getLastIndex() (int, error) {
 	
 	lastIndex, err = strconv.Atoi(string(lastIndexByteA))
 	if err != nil {
-		lastIndex = 0
+		return -1, err
 	}
 	
 	return lastIndex, nil
@@ -306,9 +287,6 @@ func (self *ChainArray) getNextIndex() (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	
-	
-	fmt.Printf(strconv.Itoa(lastIndex))
 	
 	return lastIndex, nil
 }
