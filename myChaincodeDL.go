@@ -16,7 +16,7 @@ type HoldingsRepository struct {
 }
 
 
-func (self *HoldingsRepository) init(stub *shim.ChaincodeStub) bool {
+func (self *HoldingsRepository) init(stub *shim.ChaincodeStub) error {
 	
 	return self.LinkedList.init(stub, holdingIndex)
 }
@@ -30,7 +30,7 @@ func (self *HoldingsRepository) getHoldingID(userID string, securityID string) s
 
 
 
-func (self *HoldingsRepository) newHolding(userID string, securityID string, units int) (string,error) {
+func (self *HoldingsRepository) newHolding(userID string, securityID string, units int) (string, error) {
 	
 	var holding Holding
 	holding.init(userID, securityID, units)
@@ -100,20 +100,20 @@ type Holding struct {
 
 
 
-func (self *Holding) init(userID string, securityID string, units int) bool {
+func (self *Holding) init(userID string, securityID string, units int) error {
 	self.UserID = userID
 	self.SecurityID = securityID
 	self.Units = units
 	
-	return true
+	return nil
 }
 
 
 
-func (self *Holding) updateUnits(units int) bool {
+func (self *Holding) updateUnits(units int) error {
 	self.Units = units
 	
-	return true
+	return nil
 }
 
 
@@ -128,7 +128,7 @@ func (self *Holding) updateUnits(units int) bool {
 
 
 
-func (self *SecurityRepository) init(stub *shim.ChaincodeStub) bool {
+func (self *SecurityRepository) init(stub *shim.ChaincodeStub) error {
 	
 	return self.chainArray.init(stub, securityIndex)
 }
@@ -208,12 +208,12 @@ type Security struct {
 
 
 
-func (self *Security) init(securityID string, description string, status string) bool {
+func (self *Security) init(securityID string, description string, status string) error {
 	self.SecurityID = securityID
 	self.Description = description
 	self.Status = status
 	
-	return true
+	return nil
 }
 
 
@@ -229,7 +229,7 @@ type TradeRepository struct {
 
 
 
-func (self *TradeRepository) init(stub *shim.ChaincodeStub) bool {
+func (self *TradeRepository) init(stub *shim.ChaincodeStub) error {
 	
 	return self.chainArray.init(stub, tradeIndex)
 }
@@ -293,7 +293,7 @@ type Trade struct {
 
 
 
-func (self *Trade) init(userID string, securityID string, securityPointer int, transType string, price float64, units int, expiry string, status string, fulfilled int) bool {
+func (self *Trade) init(userID string, securityID string, securityPointer int, transType string, price float64, units int, expiry string, status string, fulfilled int) error {
 	self.UserID = userID
 	self.SecurityID = securityID
 	self.SecurityPointer = securityPointer
@@ -304,7 +304,7 @@ func (self *Trade) init(userID string, securityID string, securityPointer int, t
 	self.Expiry = expiry
 	self.Fulfilled = fulfilled
 	
-	return true
+	return nil
 }
 
 
@@ -325,14 +325,14 @@ type UserRepository struct {
 
 
 
-func (self *UserRepository) init(stub *shim.ChaincodeStub) bool {
+func (self *UserRepository) init(stub *shim.ChaincodeStub) error {
 	
 	return self.LinkedList.init(stub, userIndex)
 }
 
 
 
-func (self *UserRepository) newUser(userID string, ballance int, status string) (string,error) {
+func (self *UserRepository) newUser(userID string, ballance int, status string) (string, error) {
 	
 	var user User
 	user.init(userID, ballance, status)
@@ -411,12 +411,12 @@ type User struct {
 
 
 
-func (self *User) init(userID string, ballance int, status string) bool {
+func (self *User) init(userID string, ballance int, status string) error {
 	self.UserID = userID
 	self.Status = status
 	self.Ballance = ballance
 	
-	return true
+	return nil
 }
 
 

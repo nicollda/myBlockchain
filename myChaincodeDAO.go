@@ -34,11 +34,11 @@ type ChainLinkedList struct {
 	nextNode string
 }
 
-func (self *ChainLinkedList) init(stub *shim.ChaincodeStub, mapName string) bool {
+func (self *ChainLinkedList) init(stub *shim.ChaincodeStub, mapName string) error {
 	self.stub = stub
 	self.mapName = mapName
 	
-	return true
+	return nil
 }
 
 
@@ -216,11 +216,11 @@ type ChainArray struct {
 	ArrayName string
 }
 
-func (self *ChainArray) init(stub *shim.ChaincodeStub, arrayName string) bool {
+func (self *ChainArray) init(stub *shim.ChaincodeStub, arrayName string) error {
 	self.stub = stub
 	self.ArrayName = arrayName
 	
-	return true
+	return nil
 }
 
 
