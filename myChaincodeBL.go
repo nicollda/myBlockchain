@@ -66,6 +66,10 @@ func (t *ChaincodeBusinessLayer) initObjects(stub *shim.ChaincodeStub) error {
 	return nil
 }
 
+
+
+
+
 //********************************************************************************************************
 //****                        Debug function inplimentations                                          ****
 //********************************************************************************************************
@@ -476,4 +480,64 @@ func (t *ChaincodeBusinessLayer) getUserID(args []string) ([]byte, error) {
 	//returns the user's ID 
 	
 	return nil, nil  //dont know how to get the current user
+}
+
+
+
+
+
+
+
+
+
+
+//********************************************************************************************************
+//****                              Security implimentations                                          ****
+//********************************************************************************************************
+
+
+
+
+
+func (t *ChaincodeBusinessLayer) isCaller(certificate []byte) (bool, error) {
+	// In order to enforce access control, we require that the
+	// metadata contains the signature under the signing key corresponding
+	// to the verification key inside certificate of
+	// the payload of the transaction (namely, function name and args) and
+	// the transaction binding (to avoid copying attacks)
+
+	// Verify \sigma=Sign(certificate.sk, tx.Payload||tx.Binding) against certificate.vk
+	// \sigma is in the metadata
+
+	sigma, err := t.stub.GetCallerMetadata()
+	if err != nil {
+		return false, errors.New("Failed getting metadata")
+	}
+	payload, err := t.stub.GetPayload()
+	if err != nil {
+		return false, errors.New("Failed getting payload")
+	}
+	binding, err := t.stub.GetBinding()
+	if err != nil {
+		return false, errors.New("Failed getting binding")
+	}
+
+	t.writeOut("passed certificate " + string(certificate))
+	t.writeOut("passed sigma " + string(sigma))
+	t.writeOut("passed payload " + string(payload))
+	t.writeOut("passed binding " + string(binding))
+
+	ok, err := t.stub.VerifySignature(certificate, sigma, append(payload, binding...), )
+	if err != nil {
+		t.writeOut("Failed checking signature: ") // + string(err.text))  dont knwo how to convert error ro string
+		return ok, err
+	}
+	
+	if !ok {
+		t.writeOut("Invalid signature")
+	}
+
+	t.writeOut("Check caller...Verified!")
+
+	return ok, err
 }

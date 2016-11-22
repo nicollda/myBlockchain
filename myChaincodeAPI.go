@@ -64,6 +64,12 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	adminCert, err := stub.GetCallerMetadata()
 	adminCert = adminCert
 	
+	
+	
+	
+	
+	
+	
 	//Register some users.  this would normally happen via the UI but we will do it here to simplify
 	_, err = t.bl.registerUser("BANK")
 	if err != nil {
