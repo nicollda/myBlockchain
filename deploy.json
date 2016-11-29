@@ -4,7 +4,7 @@
     "params": {
         "type": 1,
         "chaincodeID": {
-            "path": "https://github.com/nicollda/myBlockchain"
+            "path": "http://gopkg.in/nicollda/myBlockchain.v0/myHL"
         },
         "ctorMsg": {
             "function": "init",
