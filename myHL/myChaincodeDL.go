@@ -16,7 +16,7 @@ type HoldingsRepository struct {
 }
 
 
-func (self *HoldingsRepository) init(stub *shim.ChaincodeStub) error {
+func (self *HoldingsRepository) init(stub shim.ChaincodeStubInterface) error {
 	
 	return self.LinkedList.init(stub, holdingIndex)
 }
@@ -128,7 +128,7 @@ func (self *Holding) updateUnits(units int) error {
 
 
 
-func (self *SecurityRepository) init(stub *shim.ChaincodeStub) error {
+func (self *SecurityRepository) init(stub shim.ChaincodeStubInterface) error {
 	
 	return self.chainArray.init(stub, securityIndex)
 }
@@ -229,7 +229,7 @@ type TradeRepository struct {
 
 
 
-func (self *TradeRepository) init(stub *shim.ChaincodeStub) error {
+func (self *TradeRepository) init(stub shim.ChaincodeStubInterface) error {
 	
 	return self.chainArray.init(stub, tradeIndex)
 }
@@ -325,7 +325,7 @@ type UserRepository struct {
 
 
 
-func (self *UserRepository) init(stub *shim.ChaincodeStub) error {
+func (self *UserRepository) init(stub shim.ChaincodeStubInterface) error {
 	
 	return self.LinkedList.init(stub, userIndex)
 }

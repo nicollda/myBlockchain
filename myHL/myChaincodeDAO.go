@@ -28,13 +28,13 @@ type LinkedListNode struct {
 }
 
 type ChainLinkedList struct {
-	stub *shim.ChaincodeStub
+	stub shim.ChaincodeStubInterface
 	mapName string
 	originKey string
 	nextNode string
 }
 
-func (self *ChainLinkedList) init(stub *shim.ChaincodeStub, mapName string) error {
+func (self *ChainLinkedList) init(stub shim.ChaincodeStubInterface, mapName string) error {
 	self.stub = stub
 	self.mapName = mapName
 	
@@ -212,11 +212,11 @@ func (self *ChainLinkedList) del(key string) error {
 //********************************************************************************
 
 type ChainArray struct {
-	stub *shim.ChaincodeStub
+	stub shim.ChaincodeStubInterface
 	ArrayName string
 }
 
-func (self *ChainArray) init(stub *shim.ChaincodeStub, arrayName string) error {
+func (self *ChainArray) init(stub shim.ChaincodeStubInterface, arrayName string) error {
 	self.stub = stub
 	self.ArrayName = arrayName
 	

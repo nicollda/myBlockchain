@@ -1,0 +1,21 @@
+{
+    "jsonrpc": "2.0",
+    "method": "deploy",
+    "params": {
+        "type": 1,
+        "chaincodeID": {
+            "path": "http://gopkg.in/ibm-blockchain/example02.v2/chaincode"
+        },
+        "ctorMsg": {
+            "function": "init",
+            "args": [
+                "a",
+                "100",
+                "b",
+                "200"
+            ]
+        },
+        "secureContext": "dashboarduser_type1_2"
+    },
+    "id": 1
+} 

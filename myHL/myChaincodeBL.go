@@ -49,10 +49,10 @@ type ChaincodeBusinessLayer struct {
 	holdingsRep		HoldingsRepository
 	securitiesRep	SecurityRepository
 	tradeRep		TradeRepository
-	stub			*shim.ChaincodeStub
+	stub shim.ChaincodeStubInterface
 }
 
-func (t *ChaincodeBusinessLayer) initObjects(stub *shim.ChaincodeStub) error {
+func (t *ChaincodeBusinessLayer) initObjects(stub shim.ChaincodeStubInterface) error {
 	t.stub = stub
 	t.writeOut("in init objects")
 	
@@ -180,7 +180,7 @@ func (t *ChaincodeBusinessLayer) holdings(userID string) ([]byte, error) {
 
 
 
-func (t *ChaincodeBusinessLayer) ballance(stub *shim.ChaincodeStub, userID string) ([]byte, error) {
+func (t *ChaincodeBusinessLayer) ballance(stub shim.ChaincodeStubInterface, userID string) ([]byte, error) {
 	fmt.Printf("Running ballance")
 	
 	user, err := t.userRep.getUser(userID)

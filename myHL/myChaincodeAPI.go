@@ -28,6 +28,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
@@ -47,7 +48,7 @@ type SimpleChaincode struct {
 
 
 //Init the blockchain.  populate a 2x2 grid of potential events for users to buy
-func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Printf("Init called, initializing chaincode")
 	
 	
@@ -166,7 +167,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 
 
 // Invoke callback representing the invocation of a chaincode
-func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Printf("Invoke called, determining function")
 	
 	t.bl.initObjects(stub) //for some reason the stub changes each call
@@ -216,7 +217,7 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 
 
 // Query callback representing the query of a chaincode
-func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Printf("Query called, determining function")
 	
 	t.bl.initObjects(stub)
@@ -242,12 +243,10 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 }
 
 
-
-
-
 func main() {
 	err := shim.Start(new(SimpleChaincode))
 	if err != nil {
 		fmt.Printf("Error starting Simple chaincode: %s", err)
 	}
-}  
+}
+
