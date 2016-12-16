@@ -4,7 +4,7 @@
     "params": {
         "type": 1,
         "chaincodeID": {
-            "path": "http://gopkg.in/nicollda/myBlockchain.v0/myHL"
+            "path": "https://github.com/Jarmanl/blueChain/tree/v1/TDBlockchain"
         },
         "ctorMsg": {
             "function": "init",
