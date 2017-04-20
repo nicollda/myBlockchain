@@ -10,7 +10,7 @@ IF NOT ERRORLEVEL 1 (
 	go clean ./myHL/
 	git commit -m "commit" -a
 	git push
-	c:\curl\curl.exe -X POST --insecure --header "Content-Type: application/json" --header "Accept: application/json" -d @deploy.json "https://56cdfd1d1c00471c913f22644988565a-vp2.us.blockchain.ibm.com:5002/chaincode" > serviceKey.txt
+	c:\curl\curl.exe -X POST --insecure --header "Content-Type: application/json" --header "Accept: application/json" -d @deploy.json "https://54419584d43e4edc8e295d24ef28a84a-vp2.us.blockchain.ibm.com:5003/chaincode" > serviceKey.txt
 )
 
 
